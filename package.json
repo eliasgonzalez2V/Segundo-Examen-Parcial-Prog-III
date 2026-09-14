@@ -1,0 +1,24 @@
+{
+  "name": "segundo-examen-parcial-prog-iii",
+  "version": "1.0.0",
+  "description": "---",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "node --watch src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eliasgonzalez2V/Segundo-Examen-Parcial-Prog-III.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eliasgonzalez2V/Segundo-Examen-Parcial-Prog-III/issues"
+  },
+  "homepage": "https://github.com/eliasgonzalez2V/Segundo-Examen-Parcial-Prog-III#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}

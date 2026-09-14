@@ -29,7 +29,7 @@ El **Sistema de Gestión y Administración de Rescate Animal** está diseñado p
 *   **Backend:** Node.js con Express
 *   **Base de Datos:** MongoDB
 *   **Vistas:** HTML5, CSS3 y JavaScript nativo
-*   **API Externa:** [API Ninjas - Animals](https://api-ninjas.com/api/ animals)
+*   **API Externa:** [API Ninjas - Animals](https://api-ninjas.com/api/animals)
 
 ---
 

@@ -15,7 +15,7 @@ El **Sistema de Gestión y Administración de Rescate Animal** está diseñado p
 
 *   **Gestión de Usuarios y Roles:** Control de acceso diferenciado para Administradores (gestión de personal) y Veterinarios (atención y registros clínicos).
 *   **CRUD Completo de Animales:** Registro de ingresos, actualización de datos y control de egresos (traslados, liberaciones o defunciones con fecha y motivo).
-*   **Estadísticas Grupales:** Se hará un seguimiento de los ingresos y defunciones por fecha del total de animales en la reserva y según su tipo de especie.
+*   **Estadísticas Grupales:** Se hará un seguimiento de los ingresos y defunciones por fecha, del total de animales en la reserva y según su tipo de especie.
 *   **Seguimiento Clínico y Evolutivo:** Carga periódica de peso, altura y observaciones médicas.
 *   **Integración con API Externa:** Consulta de valores estándar de referencia según la especie para evaluar el estado nutricional y físico del animal.
 *   **Arquitectura MVC Pura:** Separación clara entre la lógica de negocio, las rutas, los controladores y las vistas nativas.
@@ -39,7 +39,7 @@ El **Sistema de Gestión y Administración de Rescate Animal** está diseñado p
 | Rol | Permisos y Funcionalidades |
 | :--- | :--- |
 | **Administrador** | • CRUD de usuarios (veterinarios y otros administradores).<br>• Supervisión general de estadísticas de la reserva.<br>• Auditoría de registros. |
-| **Veterinario** | • CRUD de animales rescatados.<br>• Gestión de egresos (traslado, liberación, defunción).<br>• Carga y seguimiento de fichas médicas (peso, altura). |
+| **Veterinario** | • CRUD de animales rescatados.<br>• Gestión de estado del animal (ingreso, traslado, liberación, defunción).<br>• Carga y seguimiento de fichas médicas (peso, altura). |
 
 ---
 

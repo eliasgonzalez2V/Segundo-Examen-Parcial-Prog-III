@@ -1,0 +1,131 @@
+// ============================================================
+//  db.js — "Base de datos" en memoria, hidratada desde data/*.json
+// ============================================================
+// A diferencia de la versión anterior (arrays vacíos), acá
+// leemos los archivos de la carpeta /data al arrancar y los
+// cargamos en memoria. Así el estudiante ya ve datos cuando
+// hace su primer GET.
+//
+// ⚠️ Sigue siendo NO persistente: si modificás algo en memoria
+// y reiniciás el server, vuelve al estado del JSON.
+//
+// Formato de los JSON: Extended JSON de MongoDB (los que
+// exporta mongoexport). Eso quiere decir que los _id vienen
+// como { "$oid": "...." } y los timestamps como { "$date":
+// "..." }. La función "normalize" se encarga de aplanarlos.
+// ============================================================
+
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { Usuario } from '../models/Usuario.js';
+
+// --- Resolución de la ruta a /data ---
+// __filename y __dirname no existen en ESM, así que los
+// reconstruimos a partir de import.meta.url.
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const DATA_DIR = path.join(__dirname, '..', '..', 'data');
+
+// ============================================================
+//  normalize — aplana el formato Extended JSON de MongoDB
+// ============================================================
+// Recorre un objeto/array y reemplaza:
+//   { "$oid": "abc..." }  ->  "abc..."
+//   { "$date": "..." }    ->  new Date("...")
+// De esta forma, en memoria los ids son strings y las fechas
+// son objetos Date nativos de JavaScript.
+const normalize = (value) => {
+  if (Array.isArray(value)) return value.map(normalize);
+  if (value && typeof value === 'object') {
+    // Caso especial: $oid
+    if (Object.keys(value).length === 1 && value.$oid) {
+      return value.$oid;
+    }
+    // Caso especial: $date
+    if (Object.keys(value).length === 1 && value.$date) {
+      return new Date(value.$date);
+    }
+    // Objeto "normal": normalizamos campo a campo.
+    const out = {};
+    for (const [k, v] of Object.entries(value)) {
+      out[k] = normalize(v);
+    }
+    return out;
+  }
+  return value;
+};
+
+// --- Lectura síncrona del JSON ---
+// Usamos readFileSync porque los archivos son chicos y la
+// carga se hace UNA vez al arrancar el server. Si los JSON
+// crecieran mucho, conviene pasar a readFile async.
+const loadJSON = (filename) => {
+  const filePath = path.join(DATA_DIR, filename);
+  const raw = fs.readFileSync(filePath, 'utf-8');
+  return normalize(JSON.parse(raw));
+};
+
+// ============================================================
+//  Hidratación: arrays en memoria con datos del seed
+// ============================================================
+// La forma del JSON de usuarios coincide casi 1:1 con lo que
+// espera el modelo Usuario (mail, clave, tipo, perfil), solo
+// que el id viene como _id (estilo Mongo) en vez de id. Por
+// eso, para usuarios, instanciamos la clase Usuario y le
+// pasamos el _id con setId.
+const usuariosSeed = loadJSON('sgara.usuarios.json');
+//const animalesSeed = loadJSON('sgara.animales.json');
+
+const usuarios = usuariosSeed.map((u) => {
+  const usuario = new Usuario({
+    mail: u.mail,
+    password: u.password,
+    rol: u.rol,
+    perfil: u.perfil,
+  });
+  usuario.setId(u._id);
+  return usuario;
+});
+
+// --- nextId para nuevos registros ---
+// Como los _id del seed son ObjectId hex (no numéricos), para
+// los registros NUEVOS generamos un id "suficientemente único"
+// combinando timestamp + random. Dejamos los ObjectId del seed
+// intactos para no romper las referencias (autor_id, etc.).
+let nextId = Date.now();
+const newId = () => `${nextId++}-${Math.random().toString(36).slice(2, 8)}`;
+
+// ============================================================
+//  db — Objeto que expone las operaciones CRUD
+// ============================================================
+export const db = {
+  usuarios,
+  
+  // --- Utilidad interna (la usan los controllers) ---
+  newId,
+
+  // ========================================================
+  //  Operaciones de USUARIOS
+  // ========================================================
+  getUsuarios: () => usuarios,
+  getUsuarioById: (id) => usuarios.find((u) => u.id === id),
+  createUsuario: (data) => {
+    data.setId(newId());
+    usuarios.push(data);
+    return data;
+  },
+  updateUsuario: (id, data) => {
+    const index = usuarios.findIndex((u) => u.id === id);
+    if (index === -1) return null;
+    data.setId(id);
+    usuarios[index] = data;
+    return data;
+  },
+  deleteUsuario: (id) => {
+    const index = usuarios.findIndex((u) => u.id === id);
+    if (index === -1) return false;
+    usuarios.splice(index, 1);
+    return true;
+  }
+};

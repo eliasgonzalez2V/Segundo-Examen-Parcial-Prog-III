@@ -1,8 +1,8 @@
 // ============================================================
-//  Usuario.js — Modelo de Usuario
+//  Animal.js — Modelo de Animal
 // ============================================================
 // Un "modelo" representa UNA entidad de la aplicación (en este
-// caso, un usuario). Define qué datos tiene y qué reglas
+// caso, un animal). Define qué datos tiene y qué reglas
 // (validaciones) debe cumplir.
 //
 // Acá usamos una CLASE de JavaScript con campos privados
@@ -12,39 +12,31 @@
 // y por el setId controlado.
 // ============================================================
 
-import bcrypt from 'bcryptjs';
-
-export class Usuario {
+export class Animal {
   // --- Campos privados (con #) ---
   // No se pueden leer ni escribir desde fuera de la clase.
   // Esto protege los datos: por ejemplo, la clave (#clave)
   // queda "escondida" y solo se devuelve en toJSON() si
   // nosotros explícitamente lo permitimos.
   #id;
-  #mail;
-  #password;
-  #rol;
+  #codigo;
+  #especie;
+  #raza;
   #perfil;
 
   // --- Constructor ---
-  // Se ejecuta cuando hacemos "new Usuario({...})".
+  // Se ejecuta cuando hacemos "new Animal({...})".
   // Acá recibimos los datos y aplicamos las validaciones.
   // Si algo está mal, lanzamos un Error que después el
   // controller atrapará con try/catch.
-  constructor({ id = null, mail, password, rol = 'veter', perfil = {} }) {
+  constructor({ id = null, codigo, especie, raza, perfil = {} }) {
     // Cada "this.#campo = this.validarX(...)" corre la
     // validación y, si pasa, guarda el valor. Si no pasa,
     // la validación lanza Error y el constructor se corta.
     this.#id = id;
-    this.#mail = this.validarMail(mail);
-
-    // Si la contraseña ya está hasheada (viene del JSON), la respetamos.
-    // Si viene en texto plano (desde Postman), la encriptamos.
-    this.#password = typeof password === 'string' && password.startsWith('$2b$')
-      ? password
-      : bcrypt.hashSync(String(password), 10);
-
-    this.#rol = this.validarRol(rol);
+    this.#codigo = codigo;
+    this.#especie = especie;
+    this.#raza = raza;
     this.#perfil = perfil;
   }
 
@@ -54,34 +46,30 @@ export class Usuario {
   // o "express-validator", pero por ahora las escribimos a mano
   // para entender la idea.
 
-  // El mail tiene que existir y contener un "@".
-  // (Esta validación es BÁSICA; en producción usamos regex
-  // más estrictas, por ejemplo del RFC 5322.)
-  validarMail(mail) {
-    if (!mail || !mail.includes('@')) {
-      throw new Error('El mail es inválido');
+  // El código tiene que existir y tener al menos 3 caracteres.
+  validarCodigo(codigo) {
+    if (!codigo || codigo.length < 3) {
+      throw new Error('El código debe tener al menos 3 caracteres');
     }
-    return mail;
+    return codigo;
   }
 
-  // La clave debe tener al menos 4 caracteres. (También es
-  // una validación floja; en producción pediríamos mayúsculas,
-  // números, símbolos, etc., y la guardaríamos hasheada con
-  // bcrypt, nunca en texto plano.)
-  validarPassword(password) {
-    if (!password || password.length < 4) {
-      throw new Error('La clave debe tener al menos 4 caracteres');
+  // La especie debe tener al menos 4 caracteres.
+  validarEspecie(especie) {
+    if (!especie || especie.length < 4) {
+      throw new Error('La especie debe tener al menos 4 caracteres');
     }
-    return password;
+    return especie;
   }
 
   // El tipo solo puede ser 'ADMIN' o 'STD' (estándar/usuario
   // común). Usamos un array con los valores permitidos.
-  validarRol(rol) {
-    if (!['ADMIN', 'VETER'].includes(rol)) {
-      throw new Error('El rol de usuario debe ser ADMIN o VETER');
+  validarRaza(raza) {
+    const razasPermitidas = ['Perro', 'Gato', 'Ave', 'Reptil', 'Otro'];
+    if (!razasPermitidas.includes(raza)) {
+      throw new Error('La raza no es válida');
     }
-    return rol;
+    return raza;
   }
 
   // --- Getters ---
@@ -89,9 +77,9 @@ export class Usuario {
   // modificarlos. Por eso el id solo tiene getter (es único
   // y lo asigna el "db", no el cliente).
   get id() { return this.#id; }
-  get mail() { return this.#mail; }
-  get password() { return this.#password; }
-  get rol() { return this.#rol; }
+  get codigo() { return this.#codigo; }
+  get especie() { return this.#especie; }
+  get raza() { return this.#raza; }
   get perfil() { return this.#perfil; }
 
   // --- Setter controlado del id ---
@@ -103,7 +91,7 @@ export class Usuario {
 
   // --- Serialización a JSON ---
   // Cuando Express responde con res.json(usuario), internamente
-  // llama a usuario.toJSON(). Devolvemos un objeto "limpio":
+  // llama a animal.toJSON(). Devolvemos un objeto "limpio":
   //   - SIN la clave (por seguridad, no la mandamos al cliente).
   //   - SIN campos internos como __v.
   // Si querés que el id aparezca como "_id" (estilo MongoDB),
@@ -111,19 +99,15 @@ export class Usuario {
   toJSON() {
     return {
       id: this.#id,
-      mail: this.#mail,
-      password: this.password,
-      rol: this.#rol,
+      codigo: this.#codigo,
+      especie: this.#especie,
+      raza: this.#raza,
       perfil: this.#perfil,
     };
   }
-  toResponse() {
-    return {
-      id: this.#id,
-      mail: this.#mail,
-      rol: this.#rol,
-      perfil: this.#perfil,
-    };
 
+  // NECESARIO para usarlo en tu controlador al responder a Postman
+  toResponse() {
+    return this.toJSON();
   }
 }

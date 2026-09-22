@@ -13,6 +13,8 @@ import cors from 'cors';
 import usuariosRoutes from './routes/usuarios.routes.js';
 import {loginUsuario} from './controllers/usuario.controller.js';
 
+import animalesRoutes from './routes/animales.routes.js';
+
 // Importamos la constante PORT desde nuestro archivo de config.
 // Si existe la variable de entorno PORT la usa, si no, 3000.
 import { PORT } from './config/env.js';
@@ -46,8 +48,10 @@ app.get('/', (req, res) => {
 // Cada router se monta con un prefijo distinto. Express
 // redirige lo que matchee al router correspondiente.
 app.use('/api/usuarios', usuariosRoutes);
+app.use('/api/animales', animalesRoutes);
 // login
 app.post('/api/login', loginUsuario);
+
 
 // --- Encender el servidor ---
 // app.listen(PORT, callback) pone al servidor a "escuchar"

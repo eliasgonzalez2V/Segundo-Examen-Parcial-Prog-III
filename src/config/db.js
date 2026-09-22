@@ -19,6 +19,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Usuario } from '../models/Usuario.js';
+import { Animal } from '../models/Animal.js';
 
 // --- Resolución de la ruta a /data ---
 // __filename y __dirname no existen en ESM, así que los
@@ -26,6 +27,9 @@ import { Usuario } from '../models/Usuario.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const DATA_DIR = path.join(__dirname, '..', '..', 'data');
+
+const USER_PATH = path.join(DATA_DIR, 'sgara.usuarios.json');
+const ANIMAL_PATH = path.join(DATA_DIR, 'sgara.animales.json');
 
 // ============================================================
 //  normalize — aplana el formato Extended JSON de MongoDB
@@ -75,7 +79,7 @@ const loadJSON = (filename) => {
 // eso, para usuarios, instanciamos la clase Usuario y le
 // pasamos el _id con setId.
 const usuariosSeed = loadJSON('sgara.usuarios.json');
-//const animalesSeed = loadJSON('sgara.animales.json');
+const animalesSeed = loadJSON('sgara.animales.json');
 
 const usuarios = usuariosSeed.map((u) => {
   const usuario = new Usuario({
@@ -84,8 +88,19 @@ const usuarios = usuariosSeed.map((u) => {
     rol: u.rol,
     perfil: u.perfil,
   });
-  usuario.setId(u._id);
+  usuario.setId(u.id);
   return usuario;
+});
+
+const animales = animalesSeed.map((a) => {
+  const animal = new Animal({
+    codigo: a.codigo,
+    especie: a.especie,
+    raza: a.raza,
+    perfil: a.perfil,
+  });
+  animal.setId(a.id);
+  return animal;
 });
 
 // --- nextId para nuevos registros ---
@@ -101,7 +116,7 @@ const newId = () => `${nextId++}-${Math.random().toString(36).slice(2, 8)}`;
 // ============================================================
 export const db = {
   usuarios,
-  
+  animales,
   // --- Utilidad interna (la usan los controllers) ---
   newId,
 
@@ -113,8 +128,16 @@ export const db = {
   createUsuario: (data) => {
     data.setId(newId());
     usuarios.push(data);
+
+    try {
+      fs.writeFileSync(USER_PATH, JSON.stringify(usuarios, null, 2), 'utf-8');
+      console.log("¡Usuario guardado con éxito!");
+    } catch (error) {
+      console.error("ERROR AL GUARDAR EL USUARIO:", error);
+    }
     return data;
   },
+
   updateUsuario: (id, data) => {
     const index = usuarios.findIndex((u) => u.id === id);
     if (index === -1) return null;
@@ -126,6 +149,54 @@ export const db = {
     const index = usuarios.findIndex((u) => u.id === id);
     if (index === -1) return false;
     usuarios.splice(index, 1);
+
+    try {
+      fs.writeFileSync(USER_PATH, JSON.stringify(usuarios, null, 2), 'utf-8');
+      console.log("¡Usuario eliminado!");
+    } catch (error) {
+      console.error("ERROR AL ELIMINAR EL USUARIO:", error);
+    }
+
+    return true;
+  },
+
+  // ========================================================
+  //  Operaciones de ANIMALES
+  // ========================================================
+  getAnimales: () => animales,
+  getAnimalById: (id) => animales.find((a) => a.id === id),
+  createAnimal: (data) => {
+    data.setId(newId());
+    animales.push(data);
+
+    try {
+      fs.writeFileSync(ANIMAL_PATH, JSON.stringify(animales, null, 2), 'utf-8');
+      console.log("¡Animal guardado con éxito!");
+    } catch (error) {
+      console.error("ERROR AL GUARDAR EL ANIMAL:", error);
+    }
+    return data;
+  },
+
+  updateAnimal: (id, data) => {
+    const index = animales.findIndex((a) => a.id === id);
+    if (index === -1) return null;
+    data.setId(id);
+    animales[index] = data;
+    return data;
+  },
+  deleteAnimal: (id) => {
+    const index = animales.findIndex((a) => a.id === id);
+    if (index === -1) return false;
+    animales.splice(index, 1);
+
+    try {
+      fs.writeFileSync(ANIMAL_PATH, JSON.stringify(animales, null, 2), 'utf-8');
+      console.log("¡Animal eliminado!");
+    } catch (error) {
+      console.error("ERROR AL ELIMINAR EL ANIMAL:", error);
+    }
+
     return true;
   }
 };

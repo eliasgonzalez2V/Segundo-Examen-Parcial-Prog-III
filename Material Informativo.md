@@ -34,6 +34,8 @@ función asíncrona en JavaScript es aquella que permite ejecutar tareas de larg
 Se definen anteponiendo la palabra clave async antes de la función, y siempre devuelven implícitamente una Promesa.
 
 ### Cómo funciona
-El funcionamiento de una función asíncrona se basa en la combinación de dos palabras clave: async y await.
+Para manejar esta asincronía, JavaScript ha evolucionado usando callbacks, promesas y la sintaxis moderna de async/await, el funcionamiento se basa en la combinación de dos palabras clave:
 * async: Transforma cualquier función en una que retorna una promesa. Si la función retorna un valor directo, JavaScript lo envuelve automáticamente en una promesa resuelta.
 * await: Solo se puede usar dentro de una función async. Pausa la ejecución de la función en esa línea específica esperando a que la promesa se resuelva o se rechaza, sin congelar el navegador o la aplicación completa.
+
+

@@ -35,5 +35,5 @@ Se definen anteponiendo la palabra clave async antes de la función, y siempre d
 
 ### Cómo funciona
 El funcionamiento de una función asíncrona se basa en la combinación de dos palabras clave: async y await.
-• async: Transforma cualquier función en una que retorna una promesa. Si la función retorna un valor directo, JavaScript lo envuelve automáticamente en una promesa resuelta.
-• await: Solo se puede usar dentro de una función async. Pausa la ejecución de la función en esa línea específica esperando a que la promesa se resuelva o se rechaza, sin congelar el navegador o la aplicación completa.
+* async: Transforma cualquier función en una que retorna una promesa. Si la función retorna un valor directo, JavaScript lo envuelve automáticamente en una promesa resuelta.
+* await: Solo se puede usar dentro de una función async. Pausa la ejecución de la función en esa línea específica esperando a que la promesa se resuelva o se rechaza, sin congelar el navegador o la aplicación completa.

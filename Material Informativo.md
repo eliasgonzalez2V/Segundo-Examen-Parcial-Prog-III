@@ -27,3 +27,13 @@ Cuando inviertes el orden de dos middlewares en Express.js, cambia el orden de e
 * **Cambio en el flujo de datos:** El primer middleware en ser declarado ejecuta su código y llama a next() para pasar el control al segundo. Si los inviertes, el que antes era segundo ahora se ejecuta primero, por lo que puede fallar.
 * **Dependencias rotas:** Si el segundo middleware dependía de datos o modificaciones que hacía el primero en el objeto req (por ejemplo, autenticar un token antes de buscar datos de un usuario en la base de datos), la aplicación fallará o dará un comportamiento inesperado porque los datos aún no existirán.
 * **Interceptación de rutas:** Si inviertes un middleware general (como una ruta raíz * o un analizador de JSON) antes de rutas específicas, el middleware invertido podría atrapar la petición primero y enviar una respuesta prematura (res.send o res.json), evitando que las demás rutas o middlewares se ejecuten.
+
+## Que es una función asíncrona en js y como funciona
+
+función asíncrona en JavaScript es aquella que permite ejecutar tareas de larga duración (como consultar una API o leer una base de datos) sin bloquear el hilo principal, permitiendo que el programa siga respondiendo a otras acciones mientras espera el resultado.
+Se definen anteponiendo la palabra clave async antes de la función, y siempre devuelven implícitamente una Promesa.
+
+### Cómo funciona
+El funcionamiento de una función asíncrona se basa en la combinación de dos palabras clave: async y await.
+• async: Transforma cualquier función en una que retorna una promesa. Si la función retorna un valor directo, JavaScript lo envuelve automáticamente en una promesa resuelta.
+• await: Solo se puede usar dentro de una función async. Pausa la ejecución de la función en esa línea específica esperando a que la promesa se resuelva o se rechaza, sin congelar el navegador o la aplicación completa.

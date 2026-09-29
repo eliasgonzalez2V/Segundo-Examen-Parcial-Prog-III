@@ -24,6 +24,6 @@ Cuando inviertes el orden de dos middlewares en Express.js, cambia el orden de e
 
 ### ¿Qué sucede exactamente?
 
-• **Cambio en el flujo de datos:** El primer middleware en ser declarado ejecuta su código y llama a next() para pasar el control al segundo. Si los inviertes, el que antes era segundo ahora se ejecuta primero, por lo que puede fallar.
-• **Dependencias rotas:** Si el segundo middleware dependía de datos o modificaciones que hacía el primero en el objeto req (por ejemplo, autenticar un token antes de buscar datos de un usuario en la base de datos), la aplicación fallará o dará un comportamiento inesperado porque los datos aún no existirán.
-• **Interceptación de rutas:** Si inviertes un middleware general (como una ruta raíz * o un analizador de JSON) antes de rutas específicas, el middleware invertido podría atrapar la petición primero y enviar una respuesta prematura (res.send o res.json), evitando que las demás rutas o middlewares se ejecuten.
+* **Cambio en el flujo de datos:** El primer middleware en ser declarado ejecuta su código y llama a next() para pasar el control al segundo. Si los inviertes, el que antes era segundo ahora se ejecuta primero, por lo que puede fallar.
+* **Dependencias rotas:** Si el segundo middleware dependía de datos o modificaciones que hacía el primero en el objeto req (por ejemplo, autenticar un token antes de buscar datos de un usuario en la base de datos), la aplicación fallará o dará un comportamiento inesperado porque los datos aún no existirán.
+* **Interceptación de rutas:** Si inviertes un middleware general (como una ruta raíz * o un analizador de JSON) antes de rutas específicas, el middleware invertido podría atrapar la petición primero y enviar una respuesta prematura (res.send o res.json), evitando que las demás rutas o middlewares se ejecuten.

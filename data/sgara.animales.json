@@ -1,14 +1,26 @@
 [
   {
     "id": "1790090274280-3gfxl6",
-    "codigo": "55551",
+    "codigo": "55553",
+    "especie": "felino",
+    "raza": "gato monntes",
+    "perfil": {
+      "nombre": "Michifus",
+      "sexo": "Macho",
+      "color": "Naranja y blanco",
+      "senias_particulares": "Cola cortada"
+    }
+  },
+  {
+    "id": "1790090274280-3gfxl7",
+    "codigo": "55554",
     "especie": "canino",
-    "raza": "perro",
+    "raza": "perro mestizo",
     "perfil": {
       "nombre": "Firulais",
       "sexo": "Macho",
-      "color": "Negro y marrón",
-      "senias_particulares": "Cicatriz pequeña en la oreja derecha"
+      "color": "Negro y blanco",
+      "senias_particulares": "Orejas caídas"
     }
   }
 ]

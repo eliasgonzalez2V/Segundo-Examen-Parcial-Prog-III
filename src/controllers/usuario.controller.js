@@ -128,8 +128,13 @@ export const loginUsuario = async (req, res) => {
 
     // Si no existe el usuario, responder 401
     if (!usuario) {
+      console.log("-> El usuario no fue encontrado en memoria");
       return res.status(401).json({ mensaje: "Credenciales inválidas" });
     }
+
+    // IMPRIMITO ESTOS TRES VALORES EXACTOS
+    console.log("Password recibido del body:", password);
+    console.log("Password guardado en el usuario:", usuario.password);
 
     // 2. Comparar la clave ingresada con el hash guardado en la base de datos
     const esClaveValida = await bcrypt.compare(password, usuario.password);
@@ -145,7 +150,7 @@ console.log(usuario.password);
     const token = jwt.sign(
       { id: usuario._id || usuario.id, rol: usuario.rol },
       SECRET_KEY,
-      { expiresIn: "1h" }
+      { expiresIn: "20000" }
     );
 
     // 4. Responder con éxito

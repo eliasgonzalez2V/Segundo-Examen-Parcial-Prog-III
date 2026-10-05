@@ -101,7 +101,7 @@ const animales = animalesSeed.map((a) => {
     raza: a.raza,
     perfil: a.perfil,
   });
-  animal.setId(a._id);
+  animal.setId(a.id);
   return animal;
 });
 
@@ -149,8 +149,9 @@ export const db = {
   getUsuarioByMail: (mail) => {
     console.log("Buscando mail:", mail);
     console.log("Mails disponibles en memoria:", usuarios.map(u => u.mail));
-    return usuarios.find(u => u.mail && u.mail.trim().toLowerCase() === mail.trim().toLowerCase());},
-  
+    return usuarios.find(u => u.mail && u.mail.trim().toLowerCase() === mail.trim().toLowerCase());
+  },
+
   updateUsuario: (id, datosNuevos) => {
     const usuario = usuarios.find(u => u.id == id);
     if (!usuario) return null;
@@ -159,11 +160,11 @@ export const db = {
     if (datosNuevos.mail) usuario.mail = datosNuevos.mail; // (o usa un método setter si mail es privado)
     if (datosNuevos.rol) usuario.rol = datosNuevos.rol;
     if (datosNuevos.perfil) usuario.perfil = datosNuevos.perfil;
-    
-    // Para el password, recuerda la regla de negocio de bcrypt que tenías:
-    if (datosNuevos.password) {
-      usuario.password = datosNuevos.password; // Asegúrate de que el setter de la clase maneje si ya empieza con $2b$
-    }
+
+    // SOLO si te mandaron una contraseña nueva Y no está ya hasheada, la hasheás acá mismo
+  if (datosNuevos.password && !datosNuevos.password.startsWith('$2b$')) {
+    usuario.password = bcrypt.hashSync(datosNuevos.password, 10);
+  }
 
     // Guardamos los cambios en el archivo JSON físico
     try {
@@ -180,9 +181,9 @@ export const db = {
   deleteUsuario: (id) => {
 
     const index = usuarios.findIndex((u) => u.id == id);
-    
+
     if (index === -1) return false;
-    
+
     usuarios.splice(index, 1);
 
     try {
@@ -204,13 +205,13 @@ export const db = {
   createAnimal: (data) => {
     data.setId(newId());
     animales.push(data);
-    /*
-        try {
-          fs.writeFileSync(ANIMAL_PATH, JSON.stringify(animales, null, 2), 'utf-8');
-          console.log("¡Animal guardado con éxito!");
-        } catch (error) {
-          console.error("ERROR AL GUARDAR EL ANIMAL:", error);
-        }*/
+
+    try {
+      fs.writeFileSync(ANIMAL_PATH, JSON.stringify(animales, null, 2));
+      console.log("¡Animal guardado con éxito!");
+    } catch (error) {
+      console.error("ERROR AL GUARDAR EL ANIMAL:", error);
+    }
     return data;
   },
 
@@ -219,6 +220,15 @@ export const db = {
     if (index === -1) return null;
     data.setId(id);
     animales[index] = data;
+
+    // Guardamos los cambios en el archivo JSON físico
+    try {
+      const datosParaGuardar = animales.map(a => a.toJSON());
+      fs.writeFileSync(ANIMAL_PATH, JSON.stringify(datosParaGuardar, null, 2));
+      console.log("Animal actualizado y guardado en disco con éxito!");
+    } catch (error) {
+      console.error("ERROR AL GUARDAR EL ARCHIVO TRAS ACTUALIZAR:", error);
+    }
     return data;
   },
   deleteAnimal: (id) => {

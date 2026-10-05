@@ -40,6 +40,21 @@ export const obtenerAnimalPorId = (req, res) => {
 };
 
 // ============================================================
+//  obtenerAnimalPorCodigo — GET /api/animales/codigo/:codigo
+// ============================================================
+// El código llega como string en req.params.codigo. Si no existe, la
+// capa controladora responde 404; si existe, responde 200.
+export const obtenerAnimalPorCodigo = (req, res) => {
+  const animal = db.getAnimalByCodigo(req.params.codigo);
+
+  if (!animal) {
+    return res.status(404).json({ mensaje: "Animal no encontrado" });
+  }
+
+  res.json(animal.toJSON());
+};
+
+// ============================================================
 //  crearAnimal — POST /api/animales
 // ============================================================
 // El modelo Animal puede lanzar Error cuando los datos no
@@ -47,8 +62,11 @@ export const obtenerAnimalPorId = (req, res) => {
 // una respuesta HTTP 400 para el cliente.
 export const crearAnimal = (req, res) => {
   try {
-    const animal = new Animal(req.body);
-    const creado = db.createAnimal(animal);
+    const {codigo} = new Animal(req.body);
+    if(!codigo) {
+      return res.status(400).json({ mensaje: "El código es obligatorio" });
+    }
+    const creado = db.getAnimalByCodigo(codigo);
     //Usa el método que oculta la contraseña para Postman
     res.status(201).json(creado.toJSON());
   } catch (error) {

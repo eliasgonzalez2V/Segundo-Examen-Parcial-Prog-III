@@ -9,26 +9,31 @@ import express from 'express';
 import {
   obtenerAnimales,
   obtenerAnimalPorId,
+  obtenerAnimalPorCodigo,
   crearAnimal,
   actualizarAnimal,
   eliminarAnimal,
 } from '../controllers/animal.controller.js';
+import { logInfoCli, authToken, esAdmin } from '../middlewares/middlewares.js';
 
 const router = express.Router();
 
 // GET /api/animales -> listar todos
-router.get('/', obtenerAnimales);
+router.get('/', logInfoCli, obtenerAnimales);
 
 // GET /api/animales/:id -> obtener uno
-router.get('/:id', obtenerAnimalPorId);
+router.get('/:id',logInfoCli, obtenerAnimalPorId);
+
+// GET /api/animales/codigo/:codigo -> obtener uno por código
+router.get('/codigo/:codigo', logInfoCli, obtenerAnimalPorCodigo);
 
 // POST /api/animales -> crear uno
-router.post('/', crearAnimal);
+router.post('/',logInfoCli, crearAnimal);
 
 // PUT /api/animales/:id -> actualizar uno
-router.put('/:id', actualizarAnimal);
+router.put('/:id', logInfoCli, actualizarAnimal);
 
 // DELETE /api/animales/:id -> eliminar uno
-router.delete('/:id', eliminarAnimal);
+router.delete('/:id', logInfoCli, authToken, esAdmin, eliminarAnimal);
 
 export default router;

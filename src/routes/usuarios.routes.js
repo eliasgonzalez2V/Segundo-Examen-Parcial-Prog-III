@@ -22,21 +22,21 @@ const router = express.Router();
 router.post('/login', loginUsuario);
 
 // GET /api/usuarios -> listar todos
-router.get('/', authToken, esAdmin, obtenerUsuarios);
+router.get('/', obtenerUsuarios);
 
 // GET /api/usuarios/:mail -> obtener uno
-router.get('/mail/:mail', authToken, esAdmin, obtenerUsuarioPorMail);
+router.get('/mail/:mail', obtenerUsuarioPorMail);
 
 // GET /api/usuarios/:id -> obtener uno
-router.get('/:id', authToken, esAdmin, obtenerUsuarioPorId);
+router.get('/:id', obtenerUsuarioPorId);
 
 // POST /api/usuarios -> crear uno
-router.post('/', authToken, esAdmin, crearUsuario);
+router.post('/', /*logInfoCli,*/  crearUsuario);
 
 // PUT /api/usuarios/:id -> actualizar uno
-router.put('/:id', authToken, esAdmin, actualizarUsuario);
+router.put('/:id', logInfoCli, authToken, actualizarUsuario);
 
 // DELETE /api/usuarios/:id -> eliminar uno
-router.delete('/:id', authToken, esAdmin, eliminarUsuario);
+router.delete('/:id', logInfoCli, authToken, esAdmin, eliminarUsuario);
 
 export default router;

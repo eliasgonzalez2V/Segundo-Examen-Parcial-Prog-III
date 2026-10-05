@@ -62,6 +62,16 @@ export class Usuario {
   // números, símbolos, etc., y la guardaríamos hasheada con
   // bcrypt, nunca en texto plano.)
   validarPassword(password) {
+
+    if (!password) {
+      throw new Error('La clave es obligatoria');
+    }
+
+    // SI YA ES UN HASH DE BCRYPT, LO DEVOLVEMOS DIRECTO (para cuando leemos del JSON)
+    if (password.startsWith('$2b$')) {
+      return password;
+    }
+
     if (!password || password.length < 8) {
       throw new Error('La clave debe tener al menos 8 caracteres');
     }
@@ -117,12 +127,10 @@ export class Usuario {
     this.#perfil = newPerfil;
   }
 
-  set password(newPassword) {
-    // Aquí aplicas tu lógica de bcrypt que ya tenías para evitar doble hash
-    this.#password = typeof newPassword === 'string' && newPassword.startsWith('$2b$')
-      ? newPassword
-      : bcrypt.hashSync(String(newPassword), 10);
+  set password(value) {
+    this.#password = value;
   }
+
   // --- Serialización a JSON ---
   // Cuando Express responde con res.json(usuario), internamente
   // llama a usuario.toJSON(). Devolvemos un objeto "limpio":

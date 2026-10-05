@@ -7,6 +7,7 @@
 
 import express from 'express';
 import {
+  loginUsuario,
   obtenerUsuarios,
   obtenerUsuarioPorId,
   crearUsuario,
@@ -14,28 +15,28 @@ import {
   eliminarUsuario,
   obtenerUsuarioPorMail
 } from '../controllers/usuario.controller.js';
-//import { logInfoCli, authToken, esAdmin } from '../middlewares/middlewares.js';
+import { logInfoCli, authToken, esAdmin } from '../middlewares/middlewares.js';
 
 const router = express.Router();
 
+router.post('/login', loginUsuario);
+
 // GET /api/usuarios -> listar todos
-router.get('/', obtenerUsuarios);
+router.get('/', authToken, esAdmin, obtenerUsuarios);
 
 // GET /api/usuarios/:mail -> obtener uno
-router.get('/mail/:mail', obtenerUsuarioPorMail);
+router.get('/mail/:mail', authToken, esAdmin, obtenerUsuarioPorMail);
 
 // GET /api/usuarios/:id -> obtener uno
-router.get('/:id', obtenerUsuarioPorId);
+router.get('/:id', authToken, esAdmin, obtenerUsuarioPorId);
 
 // POST /api/usuarios -> crear uno
-router.post('/', crearUsuario);
+router.post('/', authToken, esAdmin, crearUsuario);
 
 // PUT /api/usuarios/:id -> actualizar uno
-router.put('/:id', actualizarUsuario);
+router.put('/:id', authToken, esAdmin, actualizarUsuario);
 
 // DELETE /api/usuarios/:id -> eliminar uno
-router.delete('/:id', eliminarUsuario);
-
-
+router.delete('/:id', authToken, esAdmin, eliminarUsuario);
 
 export default router;

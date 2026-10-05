@@ -111,26 +111,30 @@ export const eliminarUsuario = (req, res) => {
   res.status(204).send();
 };
 
+// ============================================================
+//  loginUsuario — POST /api/usuarios/login
+// ============================================================
 export const loginUsuario = async (req, res) => {
   try {
     const { mail, password } = req.body;
 
     // Validación básica de campos requeridos
     if (!mail || !password) {
-      return res.status(400).json({ mensaje: "El mail y la contraseña son obligatorios" });
+      return res.status(400).json({ mensaje: "El mail y la clave son obligatorios" });
     }
 
     // 1. Buscar usuario por mail en el modelo
     const usuario = db.getUsuarioByMail(mail);
-    
+
     // Si no existe el usuario, responder 401
     if (!usuario) {
       return res.status(401).json({ mensaje: "Credenciales inválidas" });
     }
 
-    // 2. Comparar la contraseña ingresada con el hash guardado en la base de datos
+    // 2. Comparar la clave ingresada con el hash guardado en la base de datos
     const esClaveValida = await bcrypt.compare(password, usuario.password);
-
+console.log(password);
+console.log(usuario.password);
     if (!esClaveValida) {
       return res.status(401).json({ mensaje: "Credenciales inválidas" });
     }
@@ -139,19 +143,20 @@ export const loginUsuario = async (req, res) => {
     const SECRET_KEY = process.env.JWT_SECRET || 'claveblablabla';
 
     const token = jwt.sign(
-      { id: usuario._id || usuario.id, role: usuario.role },
+      { id: usuario._id || usuario.id, rol: usuario.rol },
       SECRET_KEY,
       { expiresIn: "1h" }
     );
 
     // 4. Responder con éxito
-    return res.json({ 
-      mensaje: "Login exitoso", 
-      token 
+    return res.json({
+      mensaje: "Login exitoso",
+      token
     });
 
   } catch (error) {
     console.error('Error en loginUsuario:', error);
     return res.status(500).json({ mensaje: "Error interno del servidor" });
   }
+
 };

@@ -31,19 +31,12 @@ export class Usuario {
   // Acá recibimos los datos y aplicamos las validaciones.
   // Si algo está mal, lanzamos un Error que después el
   // controller atrapará con try/catch.
-  constructor({ id = null, mail, password, rol = 'veter', perfil = {} }) {
+  constructor({ mail, password, rol = 'VETER', perfil = {} }) {
     // Cada "this.#campo = this.validarX(...)" corre la
     // validación y, si pasa, guarda el valor. Si no pasa,
     // la validación lanza Error y el constructor se corta.
-    this.#id = id;
     this.#mail = this.validarMail(mail);
-
-    // Si la contraseña ya está hasheada (viene del JSON), la respetamos.
-    // Si viene en texto plano (desde Postman), la encriptamos.
-    this.#password = typeof password === 'string' && password.startsWith('$2b$')
-      ? password
-      : bcrypt.hashSync(String(password), 10);
-
+    this.#password = this.validarPassword(password);
     this.#rol = this.validarRol(rol);
     this.#perfil = perfil;
   }
@@ -69,15 +62,26 @@ export class Usuario {
   // números, símbolos, etc., y la guardaríamos hasheada con
   // bcrypt, nunca en texto plano.)
   validarPassword(password) {
-    if (!password || password.length < 4) {
-      throw new Error('La clave debe tener al menos 4 caracteres');
+    if (!password || password.length < 8) {
+      throw new Error('La clave debe tener al menos 8 caracteres');
     }
-    return password;
+    if (!/[A-Z]/.test(password)) {
+      throw new Error('La clave debe contener al menos una letra mayúscula');
+    }
+    if (!/[0-9]/.test(password)) {
+      throw new Error('La clave debe contener al menos un número');
+    }
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      throw new Error('La clave debe contener al menos un símbolo especial');
+    }
+    const salt = bcrypt.genSaltSync(10);
+    return bcrypt.hashSync(password, salt);
   }
 
-  // El tipo solo puede ser 'ADMIN' o 'STD' (estándar/usuario
+  // El tipo solo puede ser 'ADMIN' o 'VETER' (estándar/usuario
   // común). Usamos un array con los valores permitidos.
   validarRol(rol) {
+    if (rol === '') { rol = 'VETER'; }
     if (!['ADMIN', 'VETER'].includes(rol)) {
       throw new Error('El rol de usuario debe ser ADMIN o VETER');
     }
@@ -101,6 +105,24 @@ export class Usuario {
   // crear/actualizar.
   setId(id) { this.#id = id; }
 
+  set mail(newMail) {
+    this.#mail = newMail;
+  }
+
+  set rol(newRol) {
+    this.#rol = newRol;
+  }
+
+  set perfil(newPerfil) {
+    this.#perfil = newPerfil;
+  }
+
+  set password(newPassword) {
+    // Aquí aplicas tu lógica de bcrypt que ya tenías para evitar doble hash
+    this.#password = typeof newPassword === 'string' && newPassword.startsWith('$2b$')
+      ? newPassword
+      : bcrypt.hashSync(String(newPassword), 10);
+  }
   // --- Serialización a JSON ---
   // Cuando Express responde con res.json(usuario), internamente
   // llama a usuario.toJSON(). Devolvemos un objeto "limpio":
@@ -112,18 +134,17 @@ export class Usuario {
     return {
       id: this.#id,
       mail: this.#mail,
-      password: this.password,
       rol: this.#rol,
       perfil: this.#perfil,
     };
   }
-  toResponse() {
+  toStorage() {
     return {
       id: this.#id,
       mail: this.#mail,
+      password: this.#password,
       rol: this.#rol,
       perfil: this.#perfil,
     };
-
   }
 }

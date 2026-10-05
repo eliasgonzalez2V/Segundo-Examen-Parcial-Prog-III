@@ -105,9 +105,4 @@ export class Animal {
       perfil: this.#perfil,
     };
   }
-
-  // NECESARIO para usarlo en tu controlador al responder a Postman
-  toResponse() {
-    return this.toJSON();
-  }
 }

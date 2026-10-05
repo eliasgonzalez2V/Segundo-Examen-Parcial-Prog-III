@@ -15,6 +15,7 @@
 import { db } from "../config/db.js";
 import { Usuario } from "../models/Usuario.js";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt"
 
 // ============================================================
 //  obtenerUsuarios — GET /api/usuarios
@@ -22,7 +23,7 @@ import jwt from "jsonwebtoken";
 // Devuelve todos los usuarios en formato seguro para el cliente.
 // La clave queda oculta porque toJSON() no la incluye.
 export const obtenerUsuarios = (req, res) => {
-  res.json(db.getUsuarios().map((usuario) => usuario.toResponse()));
+  res.json(db.getUsuarios().map((usuario) => usuario.toJSON()));
 };
 
 // ============================================================
@@ -37,7 +38,22 @@ export const obtenerUsuarioPorId = (req, res) => {
     return res.status(404).json({ mensaje: "Usuario no encontrado" });
   }
 
-  res.json(usuario.toResponse());
+  res.json(usuario.toJSON());
+};
+
+// ============================================================
+//  obtenerUsuarioPorMail — GET /api/usuarios/:mail
+// ============================================================
+// El mail llega como string en req.params.mail. Si no existe, la
+// capa controladora responde 404; si existe, responde 200.
+export const obtenerUsuarioPorMail = (req, res) => {
+  const usuario = db.getUsuarioByMail(req.params.mail);
+
+  if (!usuario) {
+    return res.status(404).json({ mensaje: "Usuario no encontrado" });
+  }
+
+  res.json(usuario.toJSON());
 };
 
 // ============================================================
@@ -46,12 +62,19 @@ export const obtenerUsuarioPorId = (req, res) => {
 // El modelo Usuario puede lanzar Error cuando los datos no
 // pasan las validaciones. El controller traduce ese error a
 // una respuesta HTTP 400 para el cliente.
-export const crearUsuario = (req, res) => {
+export const crearUsuario = async (req, res) => {
+  
   try {
-    const usuario = new Usuario(req.body);
-    const creado = db.createUsuario(usuario);
-    //Usa el método que oculta la contraseña para Postman
-    res.status(201).json(creado.toResponse());
+    const { mail, password, ...otrosCampos } = req.body;
+
+    const user = await db.getUsuarioByMail(mail);
+    if (user) {
+      return res.status(400).json({ mensaje: "ya existe un usuario con este mail: " + mail });
+    }
+
+    const usuario = new Usuario({ mail, password, ...otrosCampos });
+    const creado = await db.createUsuario(usuario);
+    res.status(201).json(creado.toJSON());
   } catch (error) {
     res.status(400).json({ mensaje: error.message });
   }
@@ -64,26 +87,14 @@ export const crearUsuario = (req, res) => {
 // alguno de ellos (operador ??). Vuelve a validar el usuario
 // completo antes de reemplazarlo.
 export const actualizarUsuario = (req, res) => {
-  const existente = db.getUsuarioById(req.params.id);
+  // Ya verificas que exista, o puedes dejar que el db.js lo maneje
+  const actualizado = db.updateUsuario(req.params.id, req.body);
 
-  if (!existente) {
+  if (!actualizado) {
     return res.status(404).json({ mensaje: "Usuario no encontrado" });
   }
 
-  try {
-    const datosActualizados = {
-      mail: req.body.mail ?? existente.mail,
-      password: req.body.password ?? existente.password,
-      rol: req.body.rol ?? existente.rol,
-      perfil: req.body.perfil ?? existente.perfil,
-    };
-    const usuario = new Usuario(datosActualizados);
-    usuario.setId(req.params.id);
-    const actualizado = db.updateUsuario(req.params.id, usuario);
-    res.json(actualizado.toResponse());
-  } catch (error) {
-    res.status(400).json({ mensaje: error.message });
-  }
+  res.json(actualizado.toJSON());
 };
 
 // ============================================================
@@ -101,18 +112,46 @@ export const eliminarUsuario = (req, res) => {
 };
 
 export const loginUsuario = async (req, res) => {
-  const { mail, password } = req.body;
-  // 1. Buscar usuario en el Model...
-  // 2. Comparar contraseña con bcrypt.compare(password, usuario.password)
+  try {
+    const { mail, password } = req.body;
 
-  // 3. Si es válido, generar el JWT
-  const token = jwt.sign(
-    //{ id: usuario._id, role: usuario.role },
-    {id: 1, role: 'ADMIN'},
-    // process.env.JWT_SECRET,
-    "claveblablabla",
-    { expiresIn: "15000" },
-  );
+    // Validación básica de campos requeridos
+    if (!mail || !password) {
+      return res.status(400).json({ mensaje: "El mail y la contraseña son obligatorios" });
+    }
 
-  res.json({ message: "Login exitoso", token });
+    // 1. Buscar usuario por mail en el modelo
+    const usuario = db.getUsuarioByMail(mail);
+    
+    // Si no existe el usuario, responder 401
+    if (!usuario) {
+      return res.status(401).json({ mensaje: "Credenciales inválidas" });
+    }
+
+    // 2. Comparar la contraseña ingresada con el hash guardado en la base de datos
+    const esClaveValida = await bcrypt.compare(password, usuario.password);
+
+    if (!esClaveValida) {
+      return res.status(401).json({ mensaje: "Credenciales inválidas" });
+    }
+
+    // 3. Generar el JWT con el payload del usuario
+    const SECRET_KEY = process.env.JWT_SECRET || 'claveblablabla';
+
+    const token = jwt.sign(
+      { id: usuario._id || usuario.id, role: usuario.role },
+      SECRET_KEY,
+      { expiresIn: "1h" }
+    );
+
+    // 4. Responder con éxito
+    return res.json({ 
+      mensaje: "Login exitoso", 
+      token 
+    });
+
+  } catch (error) {
+    console.error('Error en loginUsuario:', error);
+    return res.status(500).json({ mensaje: "Error interno del servidor" });
+  }
 };

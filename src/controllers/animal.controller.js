@@ -14,7 +14,6 @@
 
 import { db } from "../config/db.js";
 import { Animal } from "../models/Animal.js";
-import jwt from "jsonwebtoken";
 
 // ============================================================
 //  obtenerAnimales — GET /api/animales
@@ -22,7 +21,7 @@ import jwt from "jsonwebtoken";
 // Devuelve todos los animales en formato seguro para el cliente.
 // La clave queda oculta porque toJSON() no la incluye.
 export const obtenerAnimales = (req, res) => {
-  res.json(db.getAnimales().map((animal) => animal.toResponse()));
+  res.json(db.getAnimales().map((animal) => animal.toJSON()));
 };
 
 // ============================================================
@@ -37,7 +36,7 @@ export const obtenerAnimalPorId = (req, res) => {
     return res.status(404).json({ mensaje: "Animal no encontrado" });
   }
 
-  res.json(animal.toResponse());
+  res.json(animal.toJSON());
 };
 
 // ============================================================
@@ -51,7 +50,7 @@ export const crearAnimal = (req, res) => {
     const animal = new Animal(req.body);
     const creado = db.createAnimal(animal);
     //Usa el método que oculta la contraseña para Postman
-    res.status(201).json(creado.toResponse());
+    res.status(201).json(creado.toJSON());
   } catch (error) {
     res.status(400).json({ mensaje: error.message });
   }

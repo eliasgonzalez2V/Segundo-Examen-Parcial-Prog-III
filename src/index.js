@@ -11,9 +11,8 @@ import cors from 'cors';
 // Importamos el "router" de usuarios. Cada router agrupa las
 // rutas de un recurso. Acá podríamos sumar más routers.
 import usuariosRoutes from './routes/usuarios.routes.js';
-import {loginUsuario} from './controllers/usuario.controller.js';
-
 import animalesRoutes from './routes/animales.routes.js';
+import {loginUsuario} from './controllers/usuario.controller.js';
 
 // Importamos la constante PORT desde nuestro archivo de config.
 // Si existe la variable de entorno PORT la usa, si no, 3000.
@@ -58,5 +57,5 @@ app.post('/api/login', loginUsuario);
 // peticiones TCP en el puerto indicado. El callback se
 // ejecuta una vez cuando el servidor está listo.
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en el puerto ${PORT}`);
+  console.log(`Servidor corriendo en el puerto http://localhost:${PORT}`);
 });

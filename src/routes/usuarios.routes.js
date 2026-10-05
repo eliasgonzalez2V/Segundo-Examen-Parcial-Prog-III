@@ -12,12 +12,17 @@ import {
   crearUsuario,
   actualizarUsuario,
   eliminarUsuario,
+  obtenerUsuarioPorMail
 } from '../controllers/usuario.controller.js';
+//import { logInfoCli, authToken, esAdmin } from '../middlewares/middlewares.js';
 
 const router = express.Router();
 
 // GET /api/usuarios -> listar todos
 router.get('/', obtenerUsuarios);
+
+// GET /api/usuarios/:mail -> obtener uno
+router.get('/mail/:mail', obtenerUsuarioPorMail);
 
 // GET /api/usuarios/:id -> obtener uno
 router.get('/:id', obtenerUsuarioPorId);
@@ -30,5 +35,7 @@ router.put('/:id', actualizarUsuario);
 
 // DELETE /api/usuarios/:id -> eliminar uno
 router.delete('/:id', eliminarUsuario);
+
+
 
 export default router;

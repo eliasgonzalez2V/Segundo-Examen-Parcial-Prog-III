@@ -1,24 +1,13 @@
 [
   {
-    "id": "1790088090799-soi54x",
-    "mail": "pepe-naba@gmail.com",
-    "password": "$2b$10$Kiok1P.MApAEpA401/B5kOlmhy8rBaHFLh/xk/UyWRDUfIlwXsYRq",
+    "id": "1791158791812-x876yr",
+    "mail": "roque-naba@gmail.com",
+    "password": "$2b$10$A3DuwASTF.dPjfJKieGyuuOEtMPj2aSewQUwM2LtzpeSJ0iOfNKn.",
     "rol": "ADMIN",
     "perfil": {
-      "nombre": "Pepe",
+      "nombre": "Roque",
       "apellido": "Naba",
-      "foto": "pepe.jpg"
-    }
-  },
-  {
-    "id": "1790088090800-8li21m",
-    "mail": "pedro-naba@gmail.com",
-    "password": "$2b$10$EaaJwwJFwxYJdtxVb/lP7OiEsI6f14Zc4UhCr4L7n/aVzH.dFQY9i",
-    "rol": "VETER",
-    "perfil": {
-      "nombre": "Pedro",
-      "apellido": "Naba",
-      "foto": "pedro.jpg"
+      "foto": "roque.jpg"
     }
   }
 ]

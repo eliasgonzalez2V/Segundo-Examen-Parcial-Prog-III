@@ -28,8 +28,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const DATA_DIR = path.join(__dirname, '..', '..', 'data');
 
-const USER_PATH = path.join(DATA_DIR, 'sgara.usuarios.json');
-const ANIMAL_PATH = path.join(DATA_DIR, 'sgara.animales.json');
+const USER_PATH = path.join(DATA_DIR, './sgara.usuarios.json');
+const ANIMAL_PATH = path.join(DATA_DIR, './sgara.animales.json');
 
 // ============================================================
 //  normalize — aplana el formato Extended JSON de MongoDB
@@ -74,12 +74,12 @@ const loadJSON = (filename) => {
 //  Hidratación: arrays en memoria con datos del seed
 // ============================================================
 // La forma del JSON de usuarios coincide casi 1:1 con lo que
-// espera el modelo Usuario (mail, clave, tipo, perfil), solo
+// espera el modelo Usuario (mail, clave, rol, perfil), solo
 // que el id viene como _id (estilo Mongo) en vez de id. Por
 // eso, para usuarios, instanciamos la clase Usuario y le
 // pasamos el _id con setId.
-const usuariosSeed = loadJSON('sgara.usuarios.json');
-const animalesSeed = loadJSON('sgara.animales.json');
+const usuariosSeed = loadJSON('./sgara.usuarios.json');
+const animalesSeed = loadJSON('./sgara.animales.json');
 
 const usuarios = usuariosSeed.map((u) => {
   const usuario = new Usuario({
@@ -92,6 +92,8 @@ const usuarios = usuariosSeed.map((u) => {
   return usuario;
 });
 
+//Esto fue necesario ya que tendremos que trata a cada animal de manera particular y puede
+//que se deba agregar o quitar ciertas propiedades del cada animal
 const animales = animalesSeed.map((a) => {
   const animal = new Animal({
     codigo: a.codigo,
@@ -99,7 +101,7 @@ const animales = animalesSeed.map((a) => {
     raza: a.raza,
     perfil: a.perfil,
   });
-  animal.setId(a.id);
+  animal.setId(a._id);
   return animal;
 });
 
@@ -117,6 +119,7 @@ const newId = () => `${nextId++}-${Math.random().toString(36).slice(2, 8)}`;
 export const db = {
   usuarios,
   animales,
+
   // --- Utilidad interna (la usan los controllers) ---
   newId,
 
@@ -124,13 +127,18 @@ export const db = {
   //  Operaciones de USUARIOS
   // ========================================================
   getUsuarios: () => usuarios,
+
   getUsuarioById: (id) => usuarios.find((u) => u.id === id),
+
   createUsuario: (data) => {
+    console.log("ESTOY ENTRANDO A CREATE USUARIO"); // <-- Poné esto acá arriba
     data.setId(newId());
     usuarios.push(data);
 
     try {
-      fs.writeFileSync(USER_PATH, JSON.stringify(usuarios, null, 2), 'utf-8');
+      const datosParaGuardar = usuarios.map(u => u.toStorage());
+
+      fs.writeFileSync(USER_PATH, JSON.stringify(datosParaGuardar, null, 2));
       console.log("¡Usuario guardado con éxito!");
     } catch (error) {
       console.error("ERROR AL GUARDAR EL USUARIO:", error);
@@ -138,23 +146,51 @@ export const db = {
     return data;
   },
 
-  updateUsuario: (id, data) => {
-    const index = usuarios.findIndex((u) => u.id === id);
-    if (index === -1) return null;
-    data.setId(id);
-    usuarios[index] = data;
-    return data;
+  getUsuarioByMail: (mail) => {
+    console.log("Buscando mail:", mail);
+    console.log("Mails disponibles en memoria:", usuarios.map(u => u.mail));
+    return usuarios.find(u => u.mail && u.mail.trim().toLowerCase() === mail.trim().toLowerCase());},
+  
+  updateUsuario: (id, datosNuevos) => {
+    const usuario = usuarios.find(u => u.id == id);
+    if (!usuario) return null;
+
+    // Actualizamos solo los campos que vienen en el body
+    if (datosNuevos.mail) usuario.mail = datosNuevos.mail; // (o usa un método setter si mail es privado)
+    if (datosNuevos.rol) usuario.rol = datosNuevos.rol;
+    if (datosNuevos.perfil) usuario.perfil = datosNuevos.perfil;
+    
+    // Para el password, recuerda la regla de negocio de bcrypt que tenías:
+    if (datosNuevos.password) {
+      usuario.password = datosNuevos.password; // Asegúrate de que el setter de la clase maneje si ya empieza con $2b$
+    }
+
+    // Guardamos los cambios en el archivo JSON físico
+    try {
+      const datosParaGuardar = usuarios.map(u => u.toStorage());
+      fs.writeFileSync(USER_PATH, JSON.stringify(datosParaGuardar, null, 2));
+      console.log("¡Usuario actualizado y guardado en disco con éxito!");
+    } catch (error) {
+      console.error("ERROR AL GUARDAR EL ARCHIVO TRAS ACTUALIZAR:", error);
+    }
+
+    return usuario;
   },
+
   deleteUsuario: (id) => {
-    const index = usuarios.findIndex((u) => u.id === id);
+
+    const index = usuarios.findIndex((u) => u.id == id);
+    
     if (index === -1) return false;
+    
     usuarios.splice(index, 1);
 
     try {
-      fs.writeFileSync(USER_PATH, JSON.stringify(usuarios, null, 2), 'utf-8');
-      console.log("¡Usuario eliminado!");
+      const datosParaGuardar = usuarios.map(u => u.toStorage());
+      fs.writeFileSync(USER_PATH, JSON.stringify(datosParaGuardar, null, 2));
+      console.log("¡Usuario eliminado con éxito!");
     } catch (error) {
-      console.error("ERROR AL ELIMINAR EL USUARIO:", error);
+      console.error("ERROR:", error);
     }
 
     return true;
@@ -168,13 +204,13 @@ export const db = {
   createAnimal: (data) => {
     data.setId(newId());
     animales.push(data);
-
-    try {
-      fs.writeFileSync(ANIMAL_PATH, JSON.stringify(animales, null, 2), 'utf-8');
-      console.log("¡Animal guardado con éxito!");
-    } catch (error) {
-      console.error("ERROR AL GUARDAR EL ANIMAL:", error);
-    }
+    /*
+        try {
+          fs.writeFileSync(ANIMAL_PATH, JSON.stringify(animales, null, 2), 'utf-8');
+          console.log("¡Animal guardado con éxito!");
+        } catch (error) {
+          console.error("ERROR AL GUARDAR EL ANIMAL:", error);
+        }*/
     return data;
   },
 
@@ -189,14 +225,14 @@ export const db = {
     const index = animales.findIndex((a) => a.id === id);
     if (index === -1) return false;
     animales.splice(index, 1);
-
-    try {
-      fs.writeFileSync(ANIMAL_PATH, JSON.stringify(animales, null, 2), 'utf-8');
-      console.log("¡Animal eliminado!");
-    } catch (error) {
-      console.error("ERROR AL ELIMINAR EL ANIMAL:", error);
-    }
-
+    /*
+        try {
+          fs.writeFileSync(ANIMAL_PATH, JSON.stringify(animales, null, 2), 'utf-8');
+          console.log("¡Animal eliminado!");
+        } catch (error) {
+          console.error("ERROR AL ELIMINAR EL ANIMAL:", error);
+        }
+    */
     return true;
   }
 };

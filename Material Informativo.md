@@ -39,3 +39,18 @@ Para manejar esta asincronía, JavaScript ha evolucionado usando callbacks, prom
 * await: Solo se puede usar dentro de una función async. Pausa la ejecución de la función en esa línea específica esperando a que la promesa se resuelva o se rechaza, sin congelar el navegador o la aplicación completa.
 
 
+
+
+
+06-10-26
+el asincronismo entra en la defensa
+
+Mongodb compass desde mongodb
+mongodb atlas -> database -> clusters(para hostear)->create
+mongoose
+npm i mongoose
+hacer un import en app.js
+import mongoose from 'mongoose';
+
+anda asta modelos "Ubicación en la carpeta" y créame un modelo de mongoose para usuario, según este documento de muestra de mongoDB
+anda a @ubicacion/ y refractaria todos los controladores para que trabajen con el modelo de usuario mongoose ubicado en @ubicacion/

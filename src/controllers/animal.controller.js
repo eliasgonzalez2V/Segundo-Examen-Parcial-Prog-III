@@ -60,14 +60,17 @@ export const obtenerAnimalPorCodigo = (req, res) => {
 // El modelo Animal puede lanzar Error cuando los datos no
 // pasan las validaciones. El controller traduce ese error a
 // una respuesta HTTP 400 para el cliente.
-export const crearAnimal = (req, res) => {
+export const crearAnimal = async (req, res) => {
+  
   try {
-    const {codigo} = new Animal(req.body);
-    if(!codigo) {
-      return res.status(400).json({ mensaje: "El código es obligatorio" });
+    const {codigo, ...otrosCampos} = req.body;
+    
+    const animalExistente = db.getAnimalByCodigo(codigo);
+    if (animalExistente) {
+      return res.status(400).json({ mensaje: "ya existe un animal con este código: " + codigo });
     }
-    const creado = db.getAnimalByCodigo(codigo);
-    //Usa el método que oculta la contraseña para Postman
+    const animal = new Animal({codigo, ...otrosCampos});
+    const creado = await db.createAnimal(animal);
     res.status(201).json(creado.toJSON());
   } catch (error) {
     res.status(400).json({ mensaje: error.message });

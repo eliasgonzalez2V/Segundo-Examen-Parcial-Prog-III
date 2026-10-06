@@ -162,9 +162,9 @@ export const db = {
     if (datosNuevos.perfil) usuario.perfil = datosNuevos.perfil;
 
     // SOLO si te mandaron una contraseña nueva Y no está ya hasheada, la hasheás acá mismo
-  if (datosNuevos.password && !datosNuevos.password.startsWith('$2b$')) {
-    usuario.password = bcrypt.hashSync(datosNuevos.password, 10);
-  }
+    if (datosNuevos.password && !datosNuevos.password.startsWith('$2b$')) {
+      usuario.password = bcrypt.hashSync(datosNuevos.password, 10);
+    }
 
     // Guardamos los cambios en el archivo JSON físico
     try {
@@ -215,6 +215,12 @@ export const db = {
     return data;
   },
 
+  getAnimalByCodigo: (codigo) => {
+    console.log("Buscando código:", codigo);
+    console.log("Códigos disponibles en memoria:", animales.map(u => u.codigo));
+    return animales.find(u => u.codigo && u.codigo.trim().toLowerCase() === codigo.trim().toLowerCase());
+  },
+
   updateAnimal: (id, data) => {
     const index = animales.findIndex((a) => a.id === id);
     if (index === -1) return null;
@@ -235,14 +241,14 @@ export const db = {
     const index = animales.findIndex((a) => a.id === id);
     if (index === -1) return false;
     animales.splice(index, 1);
-    /*
+    
         try {
           fs.writeFileSync(ANIMAL_PATH, JSON.stringify(animales, null, 2), 'utf-8');
           console.log("¡Animal eliminado!");
         } catch (error) {
           console.error("ERROR AL ELIMINAR EL ANIMAL:", error);
         }
-    */
+    
     return true;
   }
 };

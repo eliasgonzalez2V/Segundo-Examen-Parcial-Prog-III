@@ -8,6 +8,9 @@ import express from 'express';
 // bloquearía las llamadas.
 import cors from 'cors';
 
+// Importa mongoose, para conectar con la BD de MongDB
+import mongoose from 'mongoose';
+
 // Importamos el "router" de usuarios. Cada router agrupa las
 // rutas de un recurso. Acá podríamos sumar más routers.
 import usuariosRoutes from './routes/usuarios.routes.js';
@@ -16,7 +19,9 @@ import {loginUsuario} from './controllers/usuario.controller.js';
 
 // Importamos la constante PORT desde nuestro archivo de config.
 // Si existe la variable de entorno PORT la usa, si no, 3000.
-import { PORT } from './config/env.js';
+//import { PORT } from './config/env.js';
+import dotenv from 'dotenv';
+dotenv.config();
 
 // --- Creación de la app ---
 // express() devuelve un objeto "app" que representa al servidor.
@@ -51,11 +56,19 @@ app.use('/api/animales', animalesRoutes);
 // login
 app.post('/api/login', loginUsuario);
 
+// Conexión con la BD
+try {
+  const nombreDeLaBD = 'sgara';
+  await mongoose.connect(process.env.MONGODB_URI);
+  console.log('Base de datos conectada exitosamente');
+} catch (e) {
+  console.error('Error al conectar la BD', e);
+}
 
 // --- Encender el servidor ---
 // app.listen(PORT, callback) pone al servidor a "escuchar"
 // peticiones TCP en el puerto indicado. El callback se
 // ejecuta una vez cuando el servidor está listo.
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en el puerto http://localhost:${PORT}`);
+app.listen(process.env.PORT, () => {
+  console.log(`Servidor corriendo en el puerto http://localhost:${process.env.PORT}`);
 });

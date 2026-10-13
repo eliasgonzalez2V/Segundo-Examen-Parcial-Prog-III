@@ -1,5 +1,9 @@
 # Material Informativo
 
+##Preguntas de examen 
+¿Dónde hay desestructuración de arrays?
+¿Asincronismo?
+
 ## Introducion
 Este material es creado con el fin de que vallamos actualizándolo con material que consideremos útil, importante o como descubrimiento 
 

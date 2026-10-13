@@ -78,30 +78,33 @@ const loadJSON = (filename) => {
 // que el id viene como _id (estilo Mongo) en vez de id. Por
 // eso, para usuarios, instanciamos la clase Usuario y le
 // pasamos el _id con setId.
-const usuariosSeed = loadJSON('./sgara.usuarios.json');
-const animalesSeed = loadJSON('./sgara.animales.json');
+const usuariosSeed = loadJSON('sgara.usuarios.json');
+const animalesSeed = loadJSON('sgara.animales.json');
 
 const usuarios = usuariosSeed.map((u) => {
   const usuario = new Usuario({
+    _id: u._id,
     mail: u.mail,
     password: u.password,
     rol: u.rol,
     perfil: u.perfil,
   });
-  usuario.setId(u.id);
+  //usuario.setId(u._id);
   return usuario;
 });
+
 
 //Esto fue necesario ya que tendremos que trata a cada animal de manera particular y puede
 //que se deba agregar o quitar ciertas propiedades del cada animal
 const animales = animalesSeed.map((a) => {
   const animal = new Animal({
+    _id: a._id,
     codigo: a.codigo,
     especie: a.especie,
     raza: a.raza,
     perfil: a.perfil,
   });
-  animal.setId(a.id);
+//  animal.setId(a.id);
   return animal;
 });
 
@@ -131,124 +134,52 @@ export const db = {
   getUsuarioById: (id) => usuarios.find((u) => u.id === id),
 
   createUsuario: (data) => {
-    console.log("ESTOY ENTRANDO A CREATE USUARIO"); // <-- Poné esto acá arriba
     data.setId(newId());
     usuarios.push(data);
-
-    try {
-      const datosParaGuardar = usuarios.map(u => u.toStorage());
-
-      fs.writeFileSync(USER_PATH, JSON.stringify(datosParaGuardar, null, 2));
-      console.log("¡Usuario guardado con éxito!");
-    } catch (error) {
-      console.error("ERROR AL GUARDAR EL USUARIO:", error);
-    }
     return data;
   },
 
-  getUsuarioByMail: (mail) => {
-    console.log("Buscando mail:", mail);
-    console.log("Mails disponibles en memoria:", usuarios.map(u => u.mail));
-    return usuarios.find(u => u.mail && u.mail.trim().toLowerCase() === mail.trim().toLowerCase());
-  },
+  getUsuarioByMail: (mail) => usuarios.find((u) => u.mail === mail),
 
-  updateUsuario: (id, datosNuevos) => {
-    const usuario = usuarios.find(u => u.id == id);
-    if (!usuario) return null;
-
-    // Actualizamos solo los campos que vienen en el body
-    if (datosNuevos.mail) usuario.mail = datosNuevos.mail; // (o usa un método setter si mail es privado)
-    if (datosNuevos.rol) usuario.rol = datosNuevos.rol;
-    if (datosNuevos.perfil) usuario.perfil = datosNuevos.perfil;
-
-    // SOLO si te mandaron una contraseña nueva Y no está ya hasheada, la hasheás acá mismo
-    if (datosNuevos.password && !datosNuevos.password.startsWith('$2b$')) {
-      usuario.password = bcrypt.hashSync(datosNuevos.password, 10);
-    }
-
-    // Guardamos los cambios en el archivo JSON físico
-    try {
-      const datosParaGuardar = usuarios.map(u => u.toStorage());
-      fs.writeFileSync(USER_PATH, JSON.stringify(datosParaGuardar, null, 2));
-      console.log("¡Usuario actualizado y guardado en disco con éxito!");
-    } catch (error) {
-      console.error("ERROR AL GUARDAR EL ARCHIVO TRAS ACTUALIZAR:", error);
-    }
-
-    return usuario;
+  updateUsuario: (id, data) => {
+    const index = usuarios.findIndex((u) => u.id === id);
+    if (index === -1) return null;
+    data.setId(id);
+    usuarios[index] = data;
+    return data;
   },
 
   deleteUsuario: (id) => {
-
-    const index = usuarios.findIndex((u) => u.id == id);
-
+    const index = usuarios.findIndex((u) => u.id === id);
     if (index === -1) return false;
-
     usuarios.splice(index, 1);
-
-    try {
-      const datosParaGuardar = usuarios.map(u => u.toStorage());
-      fs.writeFileSync(USER_PATH, JSON.stringify(datosParaGuardar, null, 2));
-      console.log("¡Usuario eliminado con éxito!");
-    } catch (error) {
-      console.error("ERROR:", error);
-    }
-
     return true;
-  },
+},
 
-  // ========================================================
-  //  Operaciones de ANIMALES
-  // ========================================================
-  getAnimales: () => animales,
-  getAnimalById: (id) => animales.find((a) => a.id === id),
-  createAnimal: (data) => {
-    data.setId(newId());
+// ========================================================
+//  Operaciones de ANIMALES
+// ========================================================
+getAnimales: () => animales,
+getAnimalById: (id) => animales.find((a) => a.id === id),
+createAnimal: (data) => {
+data.setId(newId());
     animales.push(data);
-
-    try {
-      fs.writeFileSync(ANIMAL_PATH, JSON.stringify(animales, null, 2));
-      console.log("¡Animal guardado con éxito!");
-    } catch (error) {
-      console.error("ERROR AL GUARDAR EL ANIMAL:", error);
-    }
     return data;
-  },
+},
 
-  getAnimalByCodigo: (codigo) => {
-    console.log("Buscando código:", codigo);
-    console.log("Códigos disponibles en memoria:", animales.map(u => u.codigo));
-    return animales.find(u => u.codigo && u.codigo.trim().toLowerCase() === codigo.trim().toLowerCase());
-  },
+getAnimalByCodigo: (codigo) => animales.find((a) => a.codigo === codigo),
 
-  updateAnimal: (id, data) => {
-    const index = animales.findIndex((a) => a.id === id);
+updateAnimal: (id, data) => {
+const index = animales.findIndex((a) => a.id === id);
     if (index === -1) return null;
     data.setId(id);
     animales[index] = data;
-
-    // Guardamos los cambios en el archivo JSON físico
-    try {
-      const datosParaGuardar = animales.map(a => a.toJSON());
-      fs.writeFileSync(ANIMAL_PATH, JSON.stringify(datosParaGuardar, null, 2));
-      console.log("Animal actualizado y guardado en disco con éxito!");
-    } catch (error) {
-      console.error("ERROR AL GUARDAR EL ARCHIVO TRAS ACTUALIZAR:", error);
-    }
     return data;
-  },
-  deleteAnimal: (id) => {
-    const index = animales.findIndex((a) => a.id === id);
+},
+deleteAnimal: (id) => {
+const index = animales.findIndex((a) => a.id === id);
     if (index === -1) return false;
     animales.splice(index, 1);
-    
-        try {
-          fs.writeFileSync(ANIMAL_PATH, JSON.stringify(animales, null, 2), 'utf-8');
-          console.log("¡Animal eliminado!");
-        } catch (error) {
-          console.error("ERROR AL ELIMINAR EL ANIMAL:", error);
-        }
-    
     return true;
-  }
+}
 };

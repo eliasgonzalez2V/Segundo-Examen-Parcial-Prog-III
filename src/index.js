@@ -8,6 +8,9 @@ import express from 'express';
 // bloquearía las llamadas.
 import cors from 'cors';
 
+// Importa mongoose, para conectar con la BD de MongDB
+import mongoose from 'mongoose';
+
 // Importamos el "router" de usuarios. Cada router agrupa las
 // rutas de un recurso. Acá podríamos sumar más routers.
 import usuariosRoutes from './routes/usuarios.routes.js';
@@ -51,6 +54,14 @@ app.use('/api/animales', animalesRoutes);
 // login
 app.post('/api/login', loginUsuario);
 
+// Conexión con la BD
+try {
+  const nombreDeLaBD = 'sgara';
+  await mongoose.connect(`mongodb://127.0.0.1:27017/${nombreDeLaBD}`);
+  console.log('Base de datos conectada exitosamente');
+} catch (e) {
+  console.error('Error al conectar la BD', e);
+}
 
 // --- Encender el servidor ---
 // app.listen(PORT, callback) pone al servidor a "escuchar"

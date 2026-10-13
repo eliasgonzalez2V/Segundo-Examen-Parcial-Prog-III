@@ -5,9 +5,10 @@
 ¿Asincronismo?
 
 ## Introducion
-diferencia entre URL y URI
-env = entorno
-Este material es creado con el fin de que vallamos actualizándolo con material que consideremos útil, importante o como descubrimiento 
+- https://render.com/
+- diferencia entre URL y URI
+- env = entorno
+- Este material es creado con el fin de que vallamos actualizándolo con material que consideremos útil, importante o como descubrimiento 
 
 ## Ejecucion de la app
 

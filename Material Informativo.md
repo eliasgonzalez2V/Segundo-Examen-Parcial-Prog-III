@@ -1,6 +1,6 @@
 # Material Informativo
 
-##Preguntas de examen 
+## Preguntas de examen 
 ¿Dónde hay desestructuración de arrays?
 ¿Asincronismo?
 

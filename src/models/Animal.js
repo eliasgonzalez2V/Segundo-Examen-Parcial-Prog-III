@@ -42,4 +42,4 @@ animalSchema.set('toJSON', {
   },
 });
 
-export const Animal = mongoose.model('Animal', animalSchema);
+export const Animal = mongoose.model('Animal', animalSchema, 'animales');

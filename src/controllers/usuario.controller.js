@@ -188,32 +188,26 @@ export const loginUsuario = async (req, res) => {
       return res.status(400).json({ mensaje: "El mail y la clave son obligatorios" });
     }
 
-    // 1. Buscar usuario por mail en el modelo
-    const usuario = db.getUsuarioByMail(mail);
-
-    // Si no existe el usuario, responder 401
-    if (!usuario) {
-      console.log("-> El usuario no fue encontrado en memoria");
+    // Recupear campo con 'select: false' usando '+password'
+    const usu = await Usuario.findOne({ mail }).select('+password');
+    if (!usu) {
       return res.status(401).json({ mensaje: "Credenciales inválidas" });
     }
+    //const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
 
-    // IMPRIMITO ESTOS TRES VALORES EXACTOS
-    console.log("Password recibido del body:", password);
-    console.log("Password guardado en el usuario:", usuario.password);
+    const esClaveValida = await bcrypt.compare(password, usu.password);
+    console.log(esClaveValida);
 
-    // 2. Comparar la clave ingresada con el hash guardado en la base de datos
-    const esClaveValida = await bcrypt.compare(password, usuario.password);
-    console.log(password);
-    console.log(usuario.password);
     if (!esClaveValida) {
       return res.status(401).json({ mensaje: "Credenciales inválidas" });
     }
-
+  
     // 3. Generar el JWT con el payload del usuario
-    const SECRET_KEY = process.env.JWT_SECRET || 'claveblablabla';
+    const SECRET_KEY = process.env.JWT_SECRET;
+    console.log(SECRET_KEY);
 
     const token = jwt.sign(
-      { id: usuario._id || usuario.id, rol: usuario.rol },
+      { id: usu._id, rol: usu.rol },
       SECRET_KEY,
       { expiresIn: "20000" }
     );

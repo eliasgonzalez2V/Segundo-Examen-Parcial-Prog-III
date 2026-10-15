@@ -82,7 +82,8 @@ export const obtenerUsuarioPorMail = async (req, res) => {
 export const crearUsuario = async (req, res) => {
 
   try {
-    const { mail, password, rol = 'VETER', perfil = {} } = req.body;
+    // ELIMINAMOS 'rol' de la desestructuración del req.body.
+    const { mail, password, perfil = {} } = req.body;
 
     // Mongoose maneja la unicidad por índice, pero validar aquí permite responder rápido
     const existente = await Usuario.findOne({ mail });
@@ -95,7 +96,8 @@ export const crearUsuario = async (req, res) => {
     const nuevoUsuario = new Usuario({
       mail,
       password: claveHasheada,
-      rol,
+      //Fuerzo a que el unico rol sea veterinario
+      rol: 'VETER',
       perfil,
     });
 
@@ -140,14 +142,15 @@ export const actualizarUsuario = async (req, res) => {
     }
 
     // Re-hashear clave solo si se provee una nueva
-    if (clave) {
-      datosActualizados.clave = await bcrypt.hash(clave, SALT_ROUNDS);
+    if (password) {
+      datosActualizados.password = await bcrypt.hash(password, SALT_ROUNDS);
     }
 
     const actualizado = await Usuario.findByIdAndUpdate(
       id,
       { $set: datosActualizados },
-      { new: true, runValidators: true }
+    // Actualizado 'new: true' a 'returnDocument: "after"' por obsolescencia en Mongoose
+      { returnDocument: 'after', runValidators: true }
     );
 
     res.json(actualizado);
@@ -171,6 +174,7 @@ export const eliminarUsuario = async (req, res) => {
     }
 
     res.status(204).send();
+    console.log("Usuario eliminado");
   } catch (error) {
     res.status(500).json({ mensaje: error.message });
   }
@@ -193,7 +197,6 @@ export const loginUsuario = async (req, res) => {
     if (!usu) {
       return res.status(401).json({ mensaje: "Credenciales inválidas" });
     }
-    //const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
 
     const esClaveValida = await bcrypt.compare(password, usu.password);
     console.log(esClaveValida);
@@ -201,15 +204,12 @@ export const loginUsuario = async (req, res) => {
     if (!esClaveValida) {
       return res.status(401).json({ mensaje: "Credenciales inválidas" });
     }
-  
-    // 3. Generar el JWT con el payload del usuario
-    const SECRET_KEY = process.env.JWT_SECRET;
-    console.log(SECRET_KEY);
 
     const token = jwt.sign(
       { id: usu._id, rol: usu.rol },
-      SECRET_KEY,
-      { expiresIn: "20000" }
+    //Esto realiza Generar el JWT con el payload del usuario
+      process.env.JWT_SECRET,
+      { expiresIn: "30000" }
     );
 
     // 4. Responder con éxito
@@ -222,5 +222,4 @@ export const loginUsuario = async (req, res) => {
     console.error('Error en loginUsuario:', error);
     return res.status(500).json({ mensaje: "Error interno del servidor" });
   }
-
 };

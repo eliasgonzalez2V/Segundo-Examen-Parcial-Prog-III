@@ -19,19 +19,20 @@ import { logInfoCli, authToken, esAdmin } from '../middlewares/middlewares.js';
 
 const router = express.Router();
 
-router.post('/login', loginUsuario);
+// POST /api/usuarios/login -> login
+router.post('/login', logInfoCli, loginUsuario);
 
 // GET /api/usuarios -> listar todos
-router.get('/', obtenerUsuarios);
+router.get('/', logInfoCli, authToken, esAdmin, obtenerUsuarios);
 
 // GET /api/usuarios/:mail -> obtener uno
-router.get('/mail/:mail', obtenerUsuarioPorMail);
+router.get('/mail/:mail', logInfoCli, authToken, esAdmin, obtenerUsuarioPorMail);
 
 // GET /api/usuarios/:id -> obtener uno
-router.get('/:id', obtenerUsuarioPorId);
+router.get('/:id', logInfoCli, authToken, esAdmin, obtenerUsuarioPorId);
 
 // POST /api/usuarios -> crear uno
-router.post('/', /*logInfoCli,*/  crearUsuario);
+router.post('/', logInfoCli, crearUsuario);
 
 // PUT /api/usuarios/:id -> actualizar uno
 router.put('/:id', logInfoCli, authToken, actualizarUsuario);

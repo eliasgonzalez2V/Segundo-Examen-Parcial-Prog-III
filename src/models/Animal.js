@@ -21,9 +21,17 @@ const animalSchema = new mongoose.Schema(
       trim: true,
       minlength: [3, 'La especie debe tener al menos 3 caracteres'],
     },
-    raza: {
+    clase: {
       type: String,
-      required: [true, 'La raza es requerida'],
+      required: [true, 'La clase es requerida'],
+      trim: true,
+    },
+    subtipo: {
+      type: String,
+      trim: true,
+    },
+    origen: {
+      type: String,
       trim: true,
     },
     perfil: {

@@ -89,7 +89,6 @@ const usuarios = usuariosSeed.map((u) => {
     rol: u.rol,
     perfil: u.perfil,
   });
-  //usuario.setId(u._id);
   return usuario;
 });
 
@@ -101,10 +100,11 @@ const animales = animalesSeed.map((a) => {
     _id: a._id,
     codigo: a.codigo,
     especie: a.especie,
-    raza: a.raza,
+    clase: a.clase,
+    subtipo: a.subtipo,
+    origen: a.origen,
     perfil: a.perfil,
   });
-//  animal.setId(a.id);
   return animal;
 });
 

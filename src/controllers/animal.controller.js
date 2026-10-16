@@ -79,7 +79,7 @@ export const obtenerAnimalPorCodigo = async (req, res) => {
 export const crearAnimal = async (req, res) => {
   
 try {
-    const { codigo, especie, raza, perfil = {} } = req.body;
+    const { codigo, especie, clase, subtipo, origen, perfil = {} } = req.body;
 
     // Mongoose maneja la unicidad por índice, pero validar aquí permite responder rápido
     const existente = await Animal.findOne({ codigo });
@@ -90,7 +90,9 @@ try {
     const nuevoAnimal = new Animal({
       codigo,
       especie,
-      raza,
+      clase,
+      subtipo,
+      origen,
       perfil,
     });
 
@@ -115,7 +117,7 @@ export const actualizarAnimal = async (req, res) => {
   // Ya verificas que exista, o puedes dejar que el db.js lo maneje
     try {
       const { id } = req.params;
-      const { codigo, especie, raza, perfil } = req.body;
+      const { codigo, especie, clase, subtipo, origen, perfil } = req.body;
   
       const existente = await Animal.findById(id);
       if (!existente) {
@@ -127,7 +129,9 @@ export const actualizarAnimal = async (req, res) => {
   
       if (codigo !== undefined) datosActualizados.codigo = codigo;
       if (especie !== undefined) datosActualizados.especie = especie;
-      if (raza !== undefined) datosActualizados.raza = raza;
+      if (clase !== undefined) datosActualizados.clase = clase;
+      if (subtipo !== undefined) datosActualizados.subtipo = subtipo;
+      if (origen !== undefined) datosActualizados.origen = origen;
   
       // Preserva subdocumento 'perfil' sin sobreescribir propiedades no enviadas
       if (perfil) {
@@ -140,7 +144,8 @@ export const actualizarAnimal = async (req, res) => {
       const actualizado = await Animal.findByIdAndUpdate(
         id,
         { $set: datosActualizados },
-        { new: true, runValidators: true }
+        // Actualizado 'new: true' a 'returnDocument: "after"' por obsolescencia en Mongoose
+      { returnDocument: 'after', runValidators: true }
       );
   
       res.json(actualizado);
@@ -164,6 +169,7 @@ export const eliminarAnimal = async (req, res) => {
       }
   
       res.status(204).send();
+      console.log("Animal eliminado");
     } catch (error) {
       res.status(500).json({ mensaje: error.message });
     }

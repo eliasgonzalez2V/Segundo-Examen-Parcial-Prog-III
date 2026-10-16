@@ -28,12 +28,12 @@ router.get('/:id',logInfoCli, obtenerAnimalPorId);
 router.get('/codigo/:codigo', logInfoCli, obtenerAnimalPorCodigo);
 
 // POST /api/animales -> crear uno
-router.post('/',/*logInfoCli,*/ crearAnimal);
+router.post('/',logInfoCli, crearAnimal);
 
 // PUT /api/animales/:id -> actualizar uno
 router.put('/:id', logInfoCli, actualizarAnimal);
 
 // DELETE /api/animales/:id -> eliminar uno
-router.delete('/:id', logInfoCli, authToken, esAdmin, eliminarAnimal);
+router.delete('/:id', logInfoCli,/* authToken, esAdmin, */eliminarAnimal);
 
 export default router;

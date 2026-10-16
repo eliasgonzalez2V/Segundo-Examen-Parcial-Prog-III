@@ -1,26 +1,301 @@
 [
   {
-    "id": "1790090274280-3gfxl6",
-    "codigo": "55553",
-    "especie": "felino",
-    "raza": "gato monntes",
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f20"
+    },
+    "codigo": "55551",
+    "especie": "ave",
+    "clase": "pájaro",
+    "subtipo": "hornero",
+    "origen": "silvestre",
     "perfil": {
-      "nombre": "Michifus",
-      "sexo": "Hembra",
-      "color": "Naranja y blanco",
-      "senias_particulares": "Cola cortada al medio"
-    }
+      "nombre": "rito",
+      "sexo": "Macho",
+      "color": "Marrón claro y blanco",
+      "senias_particulares": "Rescatado con ala recuperada"
+    },
+    "createdAt": {
+      "$date": "2026-10-13T02:49:41.872Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-13T02:49:41.872Z"
+    },
+    "__v": 0
   },
   {
-    "id": "1790090274280-3gfxl7",
-    "codigo": "55554",
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f21"
+    },
+    "codigo": "55552",
     "especie": "canino",
-    "raza": "perro mestizo",
+    "clase": "perro",
+    "subtipo": "golden retriever",
+    "origen": "doméstico",
     "perfil": {
-      "nombre": "Firulais",
+      "nombre": "luna",
+      "sexo": "Hembra",
+      "color": "Dorado",
+      "senias_particulares": "Mancha blanca en el pecho"
+    },
+    "createdAt": {
+      "$date": "2026-10-13T03:10:12.100Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-13T03:10:12.100Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f22"
+    },
+    "codigo": "55553",
+    "especie": "felino",
+    "clase": "gato",
+    "subtipo": "siamés",
+    "origen": "doméstico",
+    "perfil": {
+      "nombre": "milo",
       "sexo": "Macho",
-      "color": "Negro y blanco",
-      "senias_particulares": "Orejas caídas"
-    }
+      "color": "Crema y marrón oscuro",
+      "senias_particulares": "Ojos azules"
+    },
+    "createdAt": {
+      "$date": "2026-10-13T04:22:15.400Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-13T04:22:15.400Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f23"
+    },
+    "codigo": "55554",
+    "especie": "ave",
+    "clase": "loro",
+    "subtipo": "guacamayo azul",
+    "origen": "exótico",
+    "perfil": {
+      "nombre": "pepe",
+      "sexo": "Macho",
+      "color": "Azul cobalto y amarillo",
+      "senias_particulares": "Plumas de la cola algo desgastadas"
+    },
+    "createdAt": {
+      "$date": "2026-10-13T05:01:33.200Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-13T05:01:33.200Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f24"
+    },
+    "codigo": "55555",
+    "especie": "canino",
+    "clase": "perro",
+    "subtipo": "caniche",
+    "origen": "doméstico",
+    "perfil": {
+      "nombre": "coco",
+      "sexo": "Macho",
+      "color": "Blanco",
+      "senias_particulares": "Sin cola"
+    },
+    "createdAt": {
+      "$date": "2026-10-13T06:15:44.500Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-13T06:15:44.500Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f25"
+    },
+    "codigo": "55556",
+    "especie": "felino",
+    "clase": "gato",
+    "subtipo": "persa",
+    "origen": "doméstico",
+    "perfil": {
+      "nombre": "nana",
+      "sexo": "Hembra",
+      "color": "Gris",
+      "senias_particulares": "Pelo muy largo"
+    },
+    "createdAt": {
+      "$date": "2026-10-13T07:30:20.110Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-13T07:30:20.110Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f26"
+    },
+    "codigo": "55557",
+    "especie": "roedor",
+    "clase": "hámster",
+    "subtipo": "sirio",
+    "origen": "doméstico",
+    "perfil": {
+      "nombre": "quesito",
+      "sexo": "Macho",
+      "color": "Dorado y blanco",
+      "senias_particulares": "Orejas oscuras"
+    },
+    "createdAt": {
+      "$date": "2026-10-13T08:45:10.900Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-13T08:45:10.900Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f27"
+    },
+    "codigo": "55558",
+    "especie": "canino",
+    "clase": "perro",
+    "subtipo": "beagle",
+    "origen": "doméstico",
+    "perfil": {
+      "nombre": "toby",
+      "sexo": "Macho",
+      "color": "Tricolor",
+      "senias_particulares": "Orejas caídas largas"
+    },
+    "createdAt": {
+      "$date": "2026-10-13T09:12:05.300Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-13T09:12:05.300Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f28"
+    },
+    "codigo": "55559",
+    "especie": "felino",
+    "clase": "gato",
+    "subtipo": "común europeo",
+    "origen": "doméstico",
+    "perfil": {
+      "nombre": "simba",
+      "sexo": "Macho",
+      "color": "Atigrado naranja",
+      "senias_particulares": "Rayas en la frente en forma de M"
+    },
+    "createdAt": {
+      "$date": "2026-10-13T10:00:50.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-13T10:00:50.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f29"
+    },
+    "codigo": "55560",
+    "especie": "ave",
+    "clase": "pájaro",
+    "subtipo": "canario",
+    "origen": "doméstico",
+    "perfil": {
+      "nombre": "sol",
+      "sexo": "Macho",
+      "color": "Amarillo brillante",
+      "senias_particulares": "Canto melodioso"
+    },
+    "createdAt": {
+      "$date": "2026-10-13T10:30:11.230Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-13T10:30:11.230Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f2a"
+    },
+    "codigo": "55561",
+    "especie": "canino",
+    "clase": "perro",
+    "subtipo": "bóxer",
+    "origen": "doméstico",
+    "perfil": {
+      "nombre": "rocky",
+      "sexo": "Macho",
+      "color": "Atigrado",
+      "senias_particulares": "Mancha blanca en el hocico"
+    },
+    "createdAt": {
+      "$date": "2026-10-13T11:15:22.500Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-13T11:15:22.500Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f2b"
+    },
+    "codigo": "55562",
+    "especie": "felino",
+    "clase": "gato",
+    "subtipo": "siamés",
+    "origen": "doméstico",
+    "perfil": {
+      "nombre": "cleo",
+      "sexo": "Hembra",
+      "color": "Blanco y café",
+      "senias_particulares": "Cicatriz pequeña en oreja derecha"
+    },
+    "createdAt": {
+      "$date": "2026-10-13T12:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-13T12:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f2c"
+    },
+    "codigo": "55563",
+    "especie": "reptil",
+    "clase": "lagarto monitor",
+    "subtipo": "dragón de komodo",
+    "origen": "silvestre",
+    "perfil": {
+      "nombre": "rex",
+      "sexo": "Macho",
+      "color": "Gris oscuro / Marrón",
+      "senias_particulares": "Cicatriz en el lomo"
+    },
+    "createdAt": {
+      "$date": "2026-10-15T23:45:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-15T23:45:00.000Z"
+    },
+    "__v": 0
   }
 ]

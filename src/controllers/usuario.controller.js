@@ -12,18 +12,25 @@
 // llamadas directas a la base de datos.
 // ============================================================
 
-import { db } from "../config/db.js";
 import { Usuario } from "../models/Usuario.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt"
+
+const SALT_ROUNDS = 10;
 
 // ============================================================
 //  obtenerUsuarios — GET /api/usuarios
 // ============================================================
 // Devuelve todos los usuarios en formato seguro para el cliente.
 // La clave queda oculta porque toJSON() no la incluye.
-export const obtenerUsuarios = (req, res) => {
-  res.json(db.getUsuarios().map((usuario) => usuario.toJSON()));
+export const obtenerUsuarios = async (_req, res) => {
+  try {
+    const usuarios = await Usuario.find();
+    // res.json llama a toJSON implícitamente, ocultando 'clave' y '__v'
+    res.json(usuarios);
+  } catch (error) {
+    res.status(500).json({ mensaje: error.message });
+  }
 };
 
 // ============================================================
@@ -31,14 +38,19 @@ export const obtenerUsuarios = (req, res) => {
 // ============================================================
 // El id llega como string en req.params.id. Si no existe, la
 // capa controladora responde 404; si existe, responde 200.
-export const obtenerUsuarioPorId = (req, res) => {
-  const usuario = db.getUsuarioById(req.params.id);
+export const obtenerUsuarioPorId = async (req, res) => {
+  try {
+    const { id } = req.params;
 
-  if (!usuario) {
-    return res.status(404).json({ mensaje: "Usuario no encontrado" });
+    const usu = await Usuario.findById(id);
+    if (!usu) {
+      return res.status(404).json({ mensaje: "Usuario no encontrado" });
+    }
+
+    res.json(usu);
+  } catch (error) {
+    res.status(500).json({ mensaje: error.message });
   }
-
-  res.json(usuario.toJSON());
 };
 
 // ============================================================
@@ -46,14 +58,19 @@ export const obtenerUsuarioPorId = (req, res) => {
 // ============================================================
 // El mail llega como string en req.params.mail. Si no existe, la
 // capa controladora responde 404; si existe, responde 200.
-export const obtenerUsuarioPorMail = (req, res) => {
-  const usuario = db.getUsuarioByMail(req.params.mail);
+export const obtenerUsuarioPorMail = async (req, res) => {
+  try {
+    const { mail } = req.params;
 
-  if (!usuario) {
-    return res.status(404).json({ mensaje: "Usuario no encontrado" });
+    const usu = await Usuario.findOne({ mail });
+    if (!usu) {
+      return res.status(404).json({ mensaje: "Usuario no encontrado" });
+    }
+
+    res.json(usu);
+  } catch (error) {
+    res.status(500).json({ mensaje: error.message });
   }
-
-  res.json(usuario.toJSON());
 };
 
 // ============================================================
@@ -63,18 +80,32 @@ export const obtenerUsuarioPorMail = (req, res) => {
 // pasan las validaciones. El controller traduce ese error a
 // una respuesta HTTP 400 para el cliente.
 export const crearUsuario = async (req, res) => {
-  
-  try {
-    const { mail, password, ...otrosCampos } = req.body;
 
-    const user = await db.getUsuarioByMail(mail);
-    if (user) {
-      return res.status(400).json({ mensaje: "ya existe un usuario con este mail: " + mail });
+  try {
+    // ELIMINAMOS 'rol' de la desestructuración del req.body.
+    const { mail, password, perfil = {} } = req.body;
+
+    // Mongoose maneja la unicidad por índice, pero validar aquí permite responder rápido
+    const existente = await Usuario.findOne({ mail });
+    if (existente) {
+      return res.status(400).json({ mensaje: `Ya existe un usuario con el mail: ${mail}` });
     }
 
-    const usuario = new Usuario({ mail, password, ...otrosCampos });
-    const creado = await db.createUsuario(usuario);
-    res.status(201).json(creado.toJSON());
+    const claveHasheada = await bcrypt.hash(password, SALT_ROUNDS);
+
+    const nuevoUsuario = new Usuario({
+      mail,
+      password: claveHasheada,
+      //Fuerzo a que el unico rol sea veterinario
+      rol: 'VETER',
+      perfil,
+    });
+
+    const creado = await nuevoUsuario.save();
+
+    console.log("¡Usuario guardado con éxito en MongoDB!", creado._id);
+
+    res.status(201).json(creado);
   } catch (error) {
     res.status(400).json({ mensaje: error.message });
   }
@@ -86,29 +117,67 @@ export const crearUsuario = async (req, res) => {
 // Conserva los campos anteriores cuando el cliente no envía
 // alguno de ellos (operador ??). Vuelve a validar el usuario
 // completo antes de reemplazarlo.
-export const actualizarUsuario = (req, res) => {
+export const actualizarUsuario = async (req, res) => {
   // Ya verificas que exista, o puedes dejar que el db.js lo maneje
-  const actualizado = db.updateUsuario(req.params.id, req.body);
+  try {
+    const { id } = req.params;
+    const { mail, rol, perfil, password } = req.body;
 
-  if (!actualizado) {
-    return res.status(404).json({ mensaje: "Usuario no encontrado" });
+    const existente = await Usuario.findById(id);
+    if (!existente) {
+      return res.status(404).json({ mensaje: "Usuario no encontrado" });
+    }
+
+    // Construcción dinámica de actualizaciones parciales
+    const datosActualizados = {};
+
+    if (mail !== undefined) datosActualizados.mail = mail;
+    if (rol !== undefined) datosActualizados.rol = rol;
+
+    // Preserva subdocumento 'perfil' sin sobreescribir propiedades no enviadas
+    if (perfil) {
+      if (perfil.nombre !== undefined) datosActualizados['perfil.nombre'] = perfil.nombre;
+      if (perfil.apellido !== undefined) datosActualizados['perfil.apellido'] = perfil.apellido;
+      if (perfil.foto !== undefined) datosActualizados['perfil.foto'] = perfil.foto;
+    }
+
+    // Re-hashear clave solo si se provee una nueva
+    if (password) {
+      datosActualizados.password = await bcrypt.hash(password, SALT_ROUNDS);
+    }
+
+    const actualizado = await Usuario.findByIdAndUpdate(
+      id,
+      { $set: datosActualizados },
+    // Actualizado 'new: true' a 'returnDocument: "after"' por obsolescencia en Mongoose
+      { returnDocument: 'after', runValidators: true }
+    );
+
+    res.json(actualizado);
+  } catch (error) {
+    res.status(400).json({ mensaje: error.message });
   }
-
-  res.json(actualizado.toJSON());
 };
 
 // ============================================================
 //  eliminarUsuario — DELETE /api/usuarios/:id
 // ============================================================
 // Responde 204 cuando elimina y 404 cuando el id no existe.
-export const eliminarUsuario = (req, res) => {
-  const eliminado = db.deleteUsuario(req.params.id);
+export const eliminarUsuario = async (req, res) => {
 
-  if (!eliminado) {
-    return res.status(404).json({ mensaje: "Usuario no encontrado" });
+  try {
+    const { id } = req.params;
+
+    const eliminado = await Usuario.findByIdAndDelete(id);
+    if (!eliminado) {
+      return res.status(404).json({ mensaje: "Usuario no encontrado" });
+    }
+
+    res.status(204).send();
+    console.log("Usuario eliminado");
+  } catch (error) {
+    res.status(500).json({ mensaje: error.message });
   }
-
-  res.status(204).send();
 };
 
 // ============================================================
@@ -123,34 +192,24 @@ export const loginUsuario = async (req, res) => {
       return res.status(400).json({ mensaje: "El mail y la clave son obligatorios" });
     }
 
-    // 1. Buscar usuario por mail en el modelo
-    const usuario = db.getUsuarioByMail(mail);
-
-    // Si no existe el usuario, responder 401
-    if (!usuario) {
-      console.log("-> El usuario no fue encontrado en memoria");
+    // Recupear campo con 'select: false' usando '+password'
+    const usu = await Usuario.findOne({ mail }).select('+password');
+    if (!usu) {
       return res.status(401).json({ mensaje: "Credenciales inválidas" });
     }
 
-    // IMPRIMITO ESTOS TRES VALORES EXACTOS
-    console.log("Password recibido del body:", password);
-    console.log("Password guardado en el usuario:", usuario.password);
+    const esClaveValida = await bcrypt.compare(password, usu.password);
+    console.log(esClaveValida);
 
-    // 2. Comparar la clave ingresada con el hash guardado en la base de datos
-    const esClaveValida = await bcrypt.compare(password, usuario.password);
-console.log(password);
-console.log(usuario.password);
     if (!esClaveValida) {
       return res.status(401).json({ mensaje: "Credenciales inválidas" });
     }
 
-    // 3. Generar el JWT con el payload del usuario
-    const SECRET_KEY = process.env.JWT_SECRET || 'claveblablabla';
-
     const token = jwt.sign(
-      { id: usuario._id || usuario.id, rol: usuario.rol },
-      SECRET_KEY,
-      { expiresIn: "20000" }
+      { id: usu._id, rol: usu.rol },
+    //Esto realiza Generar el JWT con el payload del usuario
+      process.env.JWT_SECRET,
+      { expiresIn: "30000" }
     );
 
     // 4. Responder con éxito
@@ -163,5 +222,4 @@ console.log(usuario.password);
     console.error('Error en loginUsuario:', error);
     return res.status(500).json({ mensaje: "Error interno del servidor" });
   }
-
 };

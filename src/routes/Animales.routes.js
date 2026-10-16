@@ -34,6 +34,6 @@ router.post('/',logInfoCli, crearAnimal);
 router.put('/:id', logInfoCli, actualizarAnimal);
 
 // DELETE /api/animales/:id -> eliminar uno
-router.delete('/:id', logInfoCli, authToken, esAdmin, eliminarAnimal);
+router.delete('/:id', logInfoCli,/* authToken, esAdmin, */eliminarAnimal);
 
 export default router;

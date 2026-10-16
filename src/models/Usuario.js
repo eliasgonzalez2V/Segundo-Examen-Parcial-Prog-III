@@ -1,158 +1,68 @@
 // ============================================================
-//  Usuario.js — Modelo de Usuario
+// 8: Usuario.js — Modelo de Mongoose (BD MongoDB)
 // ============================================================
-// Un "modelo" representa UNA entidad de la aplicación (en este
-// caso, un usuario). Define qué datos tiene y qué reglas
-// (validaciones) debe cumplir.
-//
-// Acá usamos una CLASE de JavaScript con campos privados
-// (los # al principio). Esto se llama ENCAPSULAMIENTO:
-// desde afuera de la clase no se puede acceder ni modificar
-// directamente mail/clave/tipo; hay que pasar por los getters
-// y por el setId controlado.
+// Representa la colección "users" en MongoDB.
+// Campos del documento de muestra:
+//   _id, mail, clave, tipo, perfil { nombre, foto },
+//   createdAt, updatedAt
 // ============================================================
+import mongoose from 'mongoose';
 
-import bcrypt from 'bcryptjs';
+const usuarioSchema = new mongoose.Schema(
+  {mail: {
+      type: String,
+      required: [true, 'El mail es requerido'],
+      unique: true,
+      lowercase: true,
+      trim: true,
+      match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Mail inválido'],
+    },
+    password: {
+      type: String,
+      required: [true, 'La clave es requerida'],
+      minlength: [8, 'La clave debe tener al menos 8 caracteres'],
+      select: false,
+    },
+    rol: {
+      type: String,
+      enum: { values: ['ADMIN', 'VETER'], message: 'Rol inválido' },
+      default: 'VETER',
+    },
+    perfil: {
+      nombre: {
+        type: String,
+        required: [true, 'El nombre es requerido'],
+        trim: true,
+        minlength: [2, 'El nombre debe tener al menos 2 caracteres'],
+        maxlength: [60, 'El nombre no puede superar 60 caracteres'],
+      },
+      apellido: {
+        type: String,
+        required: [true, 'El apellido es requerido'],
+        trim: true,
+        minlength: [2, 'El apellido debe tener al menos 2 caracteres'],
+        maxlength: [60, 'El apellido no puede superar 60 caracteres'],
+      },
+      foto: {
+        type: String,
+        trim: true,
+        default: '',
+      },
+    },
+  },
+  { timestamps: true }
+);
 
-export class Usuario {
-  // --- Campos privados (con #) ---
-  // No se pueden leer ni escribir desde fuera de la clase.
-  // Esto protege los datos: por ejemplo, la clave (#clave)
-  // queda "escondida" y solo se devuelve en toJSON() si
-  // nosotros explícitamente lo permitimos.
-  #id;
-  #mail;
-  #password;
-  #rol;
-  #perfil;
+// No devolver la clave ni __v en las respuestas JSON
+usuarioSchema.set('toJSON', {
+  transform: (_doc, ret) => {
+    delete ret.password;  
+    delete ret._id;       // Remueve el ID largo de MongoDB si usamos su mail
+    delete ret.__v;       // Remueve el número de versión
+    delete ret.createdAt; // Oculta la fecha de creación
+    delete ret.updatedAt; // Oculta la fecha de actualización
+    return ret;
+  },
+});
 
-  // --- Constructor ---
-  // Se ejecuta cuando hacemos "new Usuario({...})".
-  // Acá recibimos los datos y aplicamos las validaciones.
-  // Si algo está mal, lanzamos un Error que después el
-  // controller atrapará con try/catch.
-  constructor({ mail, password, rol = 'VETER', perfil = {} }) {
-    // Cada "this.#campo = this.validarX(...)" corre la
-    // validación y, si pasa, guarda el valor. Si no pasa,
-    // la validación lanza Error y el constructor se corta.
-    this.#mail = this.validarMail(mail);
-    this.#password = this.validarPassword(password);
-    this.#rol = this.validarRol(rol);
-    this.#perfil = perfil;
-  }
-
-  // --- Validaciones ---
-  // Cada método valida UNA regla. Lanzan Error si no se cumple.
-  // Más adelante podemos moverlas a una librería como "zod"
-  // o "express-validator", pero por ahora las escribimos a mano
-  // para entender la idea.
-
-  // El mail tiene que existir y contener un "@".
-  // (Esta validación es BÁSICA; en producción usamos regex
-  // más estrictas, por ejemplo del RFC 5322.)
-  validarMail(mail) {
-    if (!mail || !mail.includes('@')) {
-      throw new Error('El mail es inválido');
-    }
-    return mail;
-  }
-
-  // La clave debe tener al menos 4 caracteres. (También es
-  // una validación floja; en producción pediríamos mayúsculas,
-  // números, símbolos, etc., y la guardaríamos hasheada con
-  // bcrypt, nunca en texto plano.)
-  validarPassword(password) {
-
-    if (!password) {
-      throw new Error('La clave es obligatoria');
-    }
-
-    // SI YA ES UN HASH DE BCRYPT, LO DEVOLVEMOS DIRECTO (para cuando leemos del JSON)
-    if (password.startsWith('$2b$')) {
-      return password;
-    }
-
-    if (!password || password.length < 8) {
-      throw new Error('La clave debe tener al menos 8 caracteres');
-    }
-    if (!/[A-Z]/.test(password)) {
-      throw new Error('La clave debe contener al menos una letra mayúscula');
-    }
-    if (!/[0-9]/.test(password)) {
-      throw new Error('La clave debe contener al menos un número');
-    }
-    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-      throw new Error('La clave debe contener al menos un símbolo especial');
-    }
-    const salt = bcrypt.genSaltSync(10);
-    return bcrypt.hashSync(password, salt);
-  }
-
-  // El tipo solo puede ser 'ADMIN' o 'VETER' (estándar/usuario
-  // común). Usamos un array con los valores permitidos.
-  validarRol(rol) {
-    if (rol === '') { rol = 'VETER'; }
-    if (!['ADMIN', 'VETER'].includes(rol)) {
-      throw new Error('El rol de usuario debe ser ADMIN o VETER');
-    }
-    return rol;
-  }
-
-  // --- Getters ---
-  // Permiten LEER los campos privados desde afuera, pero no
-  // modificarlos. Por eso el id solo tiene getter (es único
-  // y lo asigna el "db", no el cliente).
-  get id() { return this.#id; }
-  get mail() { return this.#mail; }
-  get password() { return this.#password; }
-  get rol() { return this.#rol; }
-  get perfil() { return this.#perfil; }
-
-  // --- Setter controlado del id ---
-  // No dejamos "set id" público porque no queremos que
-  // cualquiera lo cambie. En cambio, exponemos setId(id)
-  // para que SOLO la capa de datos (db.js) lo asigne al
-  // crear/actualizar.
-  setId(id) { this.#id = id; }
-
-  set mail(newMail) {
-    this.#mail = newMail;
-  }
-
-  set rol(newRol) {
-    this.#rol = newRol;
-  }
-
-  set perfil(newPerfil) {
-    this.#perfil = newPerfil;
-  }
-
-  set password(value) {
-    this.#password = value;
-  }
-
-  // --- Serialización a JSON ---
-  // Cuando Express responde con res.json(usuario), internamente
-  // llama a usuario.toJSON(). Devolvemos un objeto "limpio":
-  //   - SIN la clave (por seguridad, no la mandamos al cliente).
-  //   - SIN campos internos como __v.
-  // Si querés que el id aparezca como "_id" (estilo MongoDB),
-  // lo cambiamos acá en un futuro.
-  toJSON() {
-    return {
-      id: this.#id,
-      mail: this.#mail,
-      rol: this.#rol,
-      perfil: this.#perfil,
-    };
-  }
-  toStorage() {
-    return {
-      id: this.#id,
-      mail: this.#mail,
-      password: this.#password,
-      rol: this.#rol,
-      perfil: this.#perfil,
-    };
-  }
-}
+export const Usuario = mongoose.model('Usuario', usuarioSchema);

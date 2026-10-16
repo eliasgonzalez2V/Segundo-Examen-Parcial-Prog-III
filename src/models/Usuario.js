@@ -56,8 +56,11 @@ const usuarioSchema = new mongoose.Schema(
 // No devolver la clave ni __v en las respuestas JSON
 usuarioSchema.set('toJSON', {
   transform: (_doc, ret) => {
-    delete ret.password;
-    delete ret.__v;
+    delete ret.password;  
+    delete ret._id;       // Remueve el ID largo de MongoDB si usamos su mail
+    delete ret.__v;       // Remueve el número de versión
+    delete ret.createdAt; // Oculta la fecha de creación
+    delete ret.updatedAt; // Oculta la fecha de actualización
     return ret;
   },
 });

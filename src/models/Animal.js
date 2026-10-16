@@ -45,7 +45,10 @@ const animalSchema = new mongoose.Schema(
 // Ocultar propiedades internas (como __v) al convertir a JSON
 animalSchema.set('toJSON', {
   transform: (_doc, ret) => {
-    delete ret.__v;
+    delete ret._id;       // Remueve el ID largo de MongoDB si usamos su codigo
+    delete ret.__v;       // Remueve el número de versión
+    delete ret.createdAt; // Oculta la fecha de creación
+    delete ret.updatedAt; // Oculta la fecha de actualización
     return ret;
   },
 });

@@ -57,8 +57,8 @@ app.post('/api/login', loginUsuario);
 // Conexión con la BD
 try {
   const nombreDeLaBD = 'sgara';
-  await mongoose.connect(`mongodb://127.0.0.1:27017/${nombreDeLaBD}`);
-  console.log('Base de datos conectada exitosamente');
+  await mongoose.connect(process.env.MONGO_URI + nombreDeLaBD);
+  console.log('Base de datos conectada exitosamente a MongoDB Atlas');
 } catch (e) {
   console.error('Error al conectar la BD', e);
 }

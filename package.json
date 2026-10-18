@@ -5,8 +5,8 @@
   "type": "module",
   "main": "src/index.js",
   "scripts": {
-    "start": "tsx node src/index.js",
-    "dev": "node --watch src/index.js"
+    "start": "tsx src/index.js",
+    "dev": "tsx --watch src/index.js"
   },
   "repository": {
     "type": "git",

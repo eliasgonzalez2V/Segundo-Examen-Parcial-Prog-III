@@ -29,8 +29,6 @@
     "mongoose": "^9.11.2"
   },
   "devDependencies": {
-    //tsx es una herramienta moderna que corre código Node.js permitiendo imports sin extensiones 
-    // (y soporta TypeScript y JS moderno de forma nativa).
     "tsx": "^4.23.15"
   }
 }

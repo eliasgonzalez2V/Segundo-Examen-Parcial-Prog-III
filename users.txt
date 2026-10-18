@@ -41,3 +41,7 @@
 "mail": "martin.admin@gmail.com",
   "password": "AdminMaster#2026",
   "rol": "VETER"
+
+  
+    //tsx es una herramienta moderna que corre código Node.js permitiendo imports sin extensiones 
+    // (y soporta TypeScript y JS moderno de forma nativa).

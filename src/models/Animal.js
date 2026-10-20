@@ -34,6 +34,10 @@ const animalSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    fechaNacimiento: {
+      type: Date,
+      trim: true,
+    },
     perfil: {
       type: Object,
       default: {},

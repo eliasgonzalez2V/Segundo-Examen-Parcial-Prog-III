@@ -55,10 +55,11 @@ app.use('/api/animales', animalesRoutes);
 app.post('/api/login', loginUsuario);
 
 // Conexión con la BD
+
 try {
-  const nombreDeLaBD = 'sgara';
-  await mongoose.connect(process.env.MONGO_URI + nombreDeLaBD);
+  await mongoose.connect(process.env.MONGO_URI);
   console.log('Base de datos conectada exitosamente a MongoDB Atlas');
+  console.log("VALOR DE MONGO_URI EN RENDER:", process.env.MONGO_URI);
 } catch (e) {
   console.error('Error al conectar la BD', e);
 }

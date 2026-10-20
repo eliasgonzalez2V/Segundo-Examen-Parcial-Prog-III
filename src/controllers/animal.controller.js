@@ -79,7 +79,7 @@ export const obtenerAnimalPorCodigo = async (req, res) => {
 export const crearAnimal = async (req, res) => {
   
 try {
-    const { codigo, especie, clase, subtipo, origen, perfil = {} } = req.body;
+    const { codigo, especie, clase, subtipo, origen, fechaNacimiento, perfil = {} } = req.body;
 
     // Mongoose maneja la unicidad por índice, pero validar aquí permite responder rápido
     const existente = await Animal.findOne({ codigo });
@@ -93,6 +93,7 @@ try {
       clase,
       subtipo,
       origen,
+      fechaNacimiento,
       perfil,
     });
 
@@ -117,7 +118,7 @@ export const actualizarAnimal = async (req, res) => {
   // Ya verificas que exista, o puedes dejar que el db.js lo maneje
     try {
       const { id } = req.params;
-      const { codigo, especie, clase, subtipo, origen, perfil } = req.body;
+      const { codigo, especie, clase, subtipo, origen, fechaNacimiento, perfil } = req.body;
   
       const existente = await Animal.findById(id);
       if (!existente) {
@@ -132,6 +133,7 @@ export const actualizarAnimal = async (req, res) => {
       if (clase !== undefined) datosActualizados.clase = clase;
       if (subtipo !== undefined) datosActualizados.subtipo = subtipo;
       if (origen !== undefined) datosActualizados.origen = origen;
+      if (fechaNacimiento !== undefined) datosActualizados.fechaNacimiento = fechaNacimiento;
   
       // Preserva subdocumento 'perfil' sin sobreescribir propiedades no enviadas
       if (perfil) {

@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "---",
   "type": "module",
-  "main": "src/index.js",
+  "main": "src/app.js",
   "scripts": {
-    "start": "tsx src/index.js",
-    "dev": "tsx --watch src/index.js"
+    "start": "tsx src/app.js",
+    "dev": "tsx --watch src/app.js"
   },
   "repository": {
     "type": "git",

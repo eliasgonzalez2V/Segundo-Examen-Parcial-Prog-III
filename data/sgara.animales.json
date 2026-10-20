@@ -8,6 +8,9 @@
     "clase": "pájaro",
     "subtipo": "hornero",
     "origen": "silvestre",
+    "fechaNacimiento": {
+      "$date": "2025-08-10T00:00:00.000Z"
+    },
     "perfil": {
       "nombre": "rito",
       "sexo": "Macho",
@@ -31,6 +34,9 @@
     "clase": "perro",
     "subtipo": "golden retriever",
     "origen": "doméstico",
+    "fechaNacimiento": {
+      "$date": "2024-03-15T00:00:00.000Z"
+    },
     "perfil": {
       "nombre": "luna",
       "sexo": "Hembra",
@@ -54,6 +60,9 @@
     "clase": "gato",
     "subtipo": "siamés",
     "origen": "doméstico",
+    "fechaNacimiento": {
+      "$date": "2025-01-20T00:00:00.000Z"
+    },
     "perfil": {
       "nombre": "milo",
       "sexo": "Macho",
@@ -77,6 +86,9 @@
     "clase": "loro",
     "subtipo": "guacamayo azul",
     "origen": "exótico",
+    "fechaNacimiento": {
+      "$date": "2023-11-05T00:00:00.000Z"
+    },
     "perfil": {
       "nombre": "pepe",
       "sexo": "Macho",
@@ -100,6 +112,9 @@
     "clase": "perro",
     "subtipo": "caniche",
     "origen": "doméstico",
+    "fechaNacimiento": {
+      "$date": "2025-05-12T00:00:00.000Z"
+    },
     "perfil": {
       "nombre": "coco",
       "sexo": "Macho",
@@ -123,6 +138,9 @@
     "clase": "gato",
     "subtipo": "persa",
     "origen": "doméstico",
+    "fechaNacimiento": {
+      "$date": "2024-09-01T00:00:00.000Z"
+    },
     "perfil": {
       "nombre": "nana",
       "sexo": "Hembra",
@@ -146,6 +164,9 @@
     "clase": "hámster",
     "subtipo": "sirio",
     "origen": "doméstico",
+    "fechaNacimiento": {
+      "$date": "2026-02-10T00:00:00.000Z"
+    },
     "perfil": {
       "nombre": "quesito",
       "sexo": "Macho",
@@ -169,6 +190,9 @@
     "clase": "perro",
     "subtipo": "beagle",
     "origen": "doméstico",
+    "fechaNacimiento": {
+      "$date": "2023-07-22T00:00:00.000Z"
+    },
     "perfil": {
       "nombre": "toby",
       "sexo": "Macho",
@@ -192,6 +216,9 @@
     "clase": "gato",
     "subtipo": "común europeo",
     "origen": "doméstico",
+    "fechaNacimiento": {
+      "$date": "2024-12-04T00:00:00.000Z"
+    },
     "perfil": {
       "nombre": "simba",
       "sexo": "Macho",
@@ -215,6 +242,9 @@
     "clase": "pájaro",
     "subtipo": "canario",
     "origen": "doméstico",
+    "fechaNacimiento": {
+      "$date": "2025-06-18T00:00:00.000Z"
+    },
     "perfil": {
       "nombre": "sol",
       "sexo": "Macho",
@@ -238,6 +268,9 @@
     "clase": "perro",
     "subtipo": "bóxer",
     "origen": "doméstico",
+    "fechaNacimiento": {
+      "$date": "2024-10-30T00:00:00.000Z"
+    },
     "perfil": {
       "nombre": "rocky",
       "sexo": "Macho",
@@ -261,6 +294,9 @@
     "clase": "gato",
     "subtipo": "siamés",
     "origen": "doméstico",
+    "fechaNacimiento": {
+      "$date": "2025-04-05T00:00:00.000Z"
+    },
     "perfil": {
       "nombre": "cleo",
       "sexo": "Hembra",
@@ -284,6 +320,9 @@
     "clase": "lagarto monitor",
     "subtipo": "dragón de komodo",
     "origen": "silvestre",
+    "fechaNacimiento": {
+      "$date": "2022-01-10T00:00:00.000Z"
+    },
     "perfil": {
       "nombre": "rex",
       "sexo": "Macho",

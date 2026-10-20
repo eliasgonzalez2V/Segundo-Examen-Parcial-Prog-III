@@ -103,6 +103,7 @@ const animales = animalesSeed.map((a) => {
     clase: a.clase,
     subtipo: a.subtipo,
     origen: a.origen,
+    fechaNacimiento: a.fechaNacimiento,
     perfil: a.perfil,
   });
   return animal;
@@ -176,6 +177,7 @@ const index = animales.findIndex((a) => a.id === id);
     animales[index] = data;
     return data;
 },
+
 deleteAnimal: (id) => {
 const index = animales.findIndex((a) => a.id === id);
     if (index === -1) return false;

@@ -15,6 +15,9 @@ import mongoose from 'mongoose';
 // rutas de un recurso. Acá podríamos sumar más routers.
 import usuariosRoutes from './routes/usuarios.routes.js';
 import animalesRoutes from './routes/animales.routes.js';
+import estadoAnimalesRoutes from './routes/estadoanimales.routes.js';
+import seguimientosRoutes from './routes/seguimientos.routes.js';
+
 import {loginUsuario} from './controllers/usuario.controller.js';
 
 // Importamos la constante PORT desde nuestro archivo de config.
@@ -51,6 +54,8 @@ app.get('/', (req, res) => {
 // redirige lo que matchee al router correspondiente.
 app.use('/api/usuarios', usuariosRoutes);
 app.use('/api/animales', animalesRoutes);
+app.use('/api/estados', estadoAnimalesRoutes);
+app.use('/api/seguimientos', seguimientosRoutes);
 // login
 app.post('/api/login', loginUsuario);
 

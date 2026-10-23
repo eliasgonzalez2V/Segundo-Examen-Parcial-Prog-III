@@ -1,0 +1,182 @@
+[
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f40"
+    },
+    "codigo": "55551",
+    "fecha_control": {
+      "$date": "2026-10-14T10:00:00.000Z"
+    },
+    "peso": 0.045,
+    "altura": 0.15,
+    "observaciones": "Control inicial post-rescate. Ala evolucionando favorablemente."
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f41"
+    },
+    "codigo": "55552",
+    "fecha_control": {
+      "$date": "2026-10-14T11:30:00.000Z"
+    },
+    "peso": 25.5,
+    "altura": 0.55,
+    "observaciones": "Buen estado corporal, signos vitales normales."
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f42"
+    },
+    "codigo": "55552",
+    "fecha_control": {
+      "$date": "2026-10-19T09:15:00.000Z"
+    },
+    "peso": 25.8,
+    "altura": 0.55,
+    "observaciones": "Control previo al traslado. Aumento de peso saludable."
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f43"
+    },
+    "codigo": "55553",
+    "fecha_control": {
+      "$date": "2026-10-14T14:00:00.000Z"
+    },
+    "peso": 3.8,
+    "altura": 0.25,
+    "observaciones": "Examen oftalmológico sin anomalías, ojos azules claros."
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f44"
+    },
+    "codigo": "55554",
+    "fecha_control": {
+      "$date": "2026-10-14T15:20:00.000Z"
+    },
+    "peso": 1.1,
+    "altura": 0.40,
+    "observaciones": "Plumas de la cola con desgaste leve, se sugiere suplemento vitamínico."
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f45"
+    },
+    "codigo": "55555",
+    "fecha_control": {
+      "$date": "2026-10-13T16:00:00.000Z"
+    },
+    "peso": 6.2,
+    "altura": 0.30,
+    "observaciones": "Control general de rutina al ingreso."
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f46"
+    },
+    "codigo": "55555",
+    "fecha_control": {
+      "$date": "2026-10-17T10:30:00.000Z"
+    },
+    "peso": 6.3,
+    "altura": 0.30,
+    "observaciones": "Preparación y apto médico para traslado."
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f47"
+    },
+    "codigo": "55556",
+    "fecha_control": {
+      "$date": "2026-10-14T09:00:00.000Z"
+    },
+    "peso": 4.2,
+    "altura": 0.25,
+    "observaciones": "Pelo largo denso, requiere cepillado frecuente para evitar nudos."
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f48"
+    },
+    "codigo": "55557",
+    "fecha_control": {
+      "$date": "2026-10-14T10:45:00.000Z"
+    },
+    "peso": 0.15,
+    "altura": 0.08,
+    "observaciones": "Activo y con buen reflejo de búsqueda de alimento."
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f49"
+    },
+    "codigo": "55558",
+    "fecha_control": {
+      "$date": "2026-10-13T12:00:00.000Z"
+    },
+    "peso": 12.0,
+    "altura": 0.40,
+    "observaciones": "Evaluación para liberación en entorno controlado."
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f4a"
+    },
+    "codigo": "55559",
+    "fecha_control": {
+      "$date": "2026-10-14T13:15:00.000Z"
+    },
+    "peso": 4.5,
+    "altura": 0.28,
+    "observaciones": "Patrón atigrado claro, conducta dócil."
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f4b"
+    },
+    "codigo": "55560",
+    "fecha_control": {
+      "$date": "2026-10-14T16:30:00.000Z"
+    },
+    "peso": 0.025,
+    "altura": 0.12,
+    "observaciones": "Canto activo y brillante, parámetros respiratorios normales."
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f4c"
+    },
+    "codigo": "55561",
+    "fecha_control": {
+      "$date": "2026-10-13T17:00:00.000Z"
+    },
+    "peso": 30.0,
+    "altura": 0.60,
+    "observaciones": "Ingreso en estado crítico por patología cardíaca previa."
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f4d"
+    },
+    "codigo": "55562",
+    "fecha_control": {
+      "$date": "2026-10-14T11:00:00.000Z"
+    },
+    "peso": 3.5,
+    "altura": 0.24,
+    "observaciones": "Cicatriz en oreja derecha limpia y seca, sin signos de infección."
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f4e"
+    },
+    "codigo": "55563",
+    "fecha_control": {
+      "$date": "2026-10-16T10:00:00.000Z"
+    },
+    "peso": 75.0,
+    "altura": 1.20,
+    "observaciones": "Control bajo estrictas normas de seguridad. Temperatura y humedad de hábitat estables."
+  }
+]

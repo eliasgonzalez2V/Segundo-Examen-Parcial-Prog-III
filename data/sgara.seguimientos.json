@@ -178,5 +178,185 @@
     "peso": 75.0,
     "altura": 1.20,
     "observaciones": "Control bajo estrictas normas de seguridad. Temperatura y humedad de hábitat estables."
+  },
+{
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f50"
+    },
+    "codigo": "55551",
+    "fecha_control": {
+      "$date": "2026-10-20T10:00:00.000Z"
+    },
+    "peso": 0.048,
+    "altura": 0.15,
+    "observaciones": "Segundo control de vuelo, se estimula favorablemente la musculatura alar."
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f51"
+    },
+    "codigo": "55553",
+    "fecha_control": {
+      "$date": "2026-10-21T11:00:00.000Z"
+    },
+    "peso": 3.9,
+    "altura": 0.25,
+    "observaciones": "Alta de cuarentena, apto para interactuar en sala común con otros felinos."
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f52"
+    },
+    "codigo": "55554",
+    "fecha_control": {
+      "$date": "2026-10-21T14:30:00.000Z"
+    },
+    "peso": 1.12,
+    "altura": 0.40,
+    "observaciones": "Suplemento vitamínico haciendo efecto; plumaje con mejor brillo y textura."
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f53"
+    },
+    "codigo": "55556",
+    "fecha_control": {
+      "$date": "2026-10-22T09:30:00.000Z"
+    },
+    "peso": 4.3,
+    "altura": 0.25,
+    "observaciones": "Control dermatológico periódico, sin presencia de nudos ni irritaciones."
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f54"
+    },
+    "codigo": "55557",
+    "fecha_control": {
+      "$date": "2026-10-22T10:15:00.000Z"
+    },
+    "peso": 0.16,
+    "altura": 0.08,
+    "observaciones": "Peso estable, dentición en perfectas condiciones y buen nivel de actividad."
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f55"
+    },
+    "codigo": "55559",
+    "fecha_control": {
+      "$date": "2026-10-22T11:00:00.000Z"
+    },
+    "peso": 4.6,
+    "altura": 0.28,
+    "observaciones": "Vacunación antirrábica de refuerzo aplicada sin reacciones adversas."
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f56"
+    },
+    "codigo": "55560",
+    "fecha_control": {
+      "$date": "2026-10-22T12:00:00.000Z"
+    },
+    "peso": 0.026,
+    "altura": 0.12,
+    "observaciones": "Excelente estado general, canto constante y plumaje brillante."
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f57"
+    },
+    "codigo": "55562",
+    "fecha_control": {
+      "$date": "2026-10-22T14:00:00.000Z"
+    },
+    "peso": 3.6,
+    "altura": 0.24,
+    "observaciones": "Revisión general satisfactoria, cicatriz completamente sana."
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f58"
+    },
+    "codigo": "55563",
+    "fecha_control": {
+      "$date": "2026-10-22T15:30:00.000Z"
+    },
+    "peso": 76.2,
+    "altura": 1.21,
+    "observaciones": "Apetito normal, termorregulación adecuada en su recinto climatizado."
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f59"
+    },
+    "codigo": "55551",
+    "fecha_control": {
+      "$date": "2026-10-22T16:00:00.000Z"
+    },
+    "peso": 0.050,
+    "altura": 0.15,
+    "observaciones": "Preparativos finales y pruebas de vuelo corto para evaluación de liberación."
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f5a"
+    },
+    "codigo": "55553",
+    "fecha_control": {
+      "$date": "2026-10-22T16:45:00.000Z"
+    },
+    "peso": 3.95,
+    "altura": 0.25,
+    "observaciones": "Control de peso semanal exitoso, excelente respuesta al nuevo alimento."
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f5b"
+    },
+    "codigo": "55554",
+    "fecha_control": {
+      "$date": "2026-10-23T09:00:00.000Z"
+    },
+    "peso": 1.15,
+    "altura": 0.40,
+    "observaciones": "Socialización positiva con los cuidadores del área."
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f5c"
+    },
+    "codigo": "55556",
+    "fecha_control": {
+      "$date": "2026-10-23T10:00:00.000Z"
+    },
+    "peso": 4.35,
+    "altura": 0.25,
+    "observaciones": "Se realiza sesión de aseo y corte higiénico de mantenimiento."
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f5d"
+    },
+    "codigo": "55559",
+    "fecha_control": {
+      "$date": "2026-10-23T11:15:00.000Z"
+    },
+    "peso": 4.65,
+    "altura": 0.28,
+    "observaciones": "Nivel de actividad física y juego dentro de parámetros completamente normales."
+  },
+  {
+    "_id": {
+      "$oid": "6acd9c4510fb519f094e6f5e"
+    },
+    "codigo": "55563",
+    "fecha_control": {
+      "$date": "2026-10-23T12:30:00.000Z"
+    },
+    "peso": 76.5,
+    "altura": 1.21,
+    "observaciones": "Mantenimiento periódico del sistema de calefacción y humedad del hábitat completado."
   }
 ]

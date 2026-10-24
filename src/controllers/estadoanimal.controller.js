@@ -126,14 +126,14 @@ export const actualizarEstadoAnimal = async (req, res) => {
       }
     }
 
-    // Construcción dinámica de actualizaciones parciales
-    const datosActualizados = {};
-
-    if (codigo !== undefined) datosActualizados.codigo = codigo;
-    if (fecha_ingreso !== undefined) datosActualizados.fecha_ingreso = fecha_ingreso;
-    if (estado !== undefined) datosActualizados.estado = estado;
-    if (fecha_egreso !== undefined) datosActualizados.fecha_egreso = fecha_egreso;
-    if (descripcion !== undefined) datosActualizados.descripcion = descripcion;
+    // Construcción dinámica limpia usando el spread operator
+    const datosActualizados = {
+      ...(codigo !== undefined && { codigo }),
+      ...(fecha_ingreso !== undefined && { fecha_ingreso }),
+      ...(estado !== undefined && { estado }),
+      ...(fecha_egreso !== undefined && { fecha_egreso }),
+      ...(descripcion !== undefined && { descripcion })
+    };
 
     const actualizado = await EstadoAnimal.findByIdAndUpdate(
       id,

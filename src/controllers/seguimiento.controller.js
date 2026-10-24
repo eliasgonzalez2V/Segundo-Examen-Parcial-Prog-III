@@ -122,14 +122,14 @@ export const actualizarSeguimiento = async (req, res) => {
       }
     }
 
-    // Construcción dinámica de actualizaciones parciales
-    const datosActualizados = {};
-
-    if (codigo !== undefined) datosActualizados.codigo = codigo;
-    if (fecha_control !== undefined) datosActualizados.fecha_control = fecha_control;
-    if (peso !== undefined) datosActualizados.peso = peso;
-    if (altura !== undefined) datosActualizados.altura = altura;
-    if (observaciones !== undefined) datosActualizados.observaciones = observaciones;
+// Construcción dinámica limpia usando el spread operator
+    const datosActualizados = {
+      ...(codigo !== undefined && { codigo }),
+      ...(fecha_control !== undefined && { fecha_control }),
+      ...(peso !== undefined && { peso }),
+      ...(altura !== undefined && { altura }),
+      ...(observaciones !== undefined && { observaciones })
+    };
 
     const actualizado = await Seguimiento.findByIdAndUpdate(
       id,

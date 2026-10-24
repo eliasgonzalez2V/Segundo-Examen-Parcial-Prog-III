@@ -128,28 +128,19 @@ export const actualizarUsuario = async (req, res) => {
       return res.status(404).json({ mensaje: "Usuario no encontrado" });
     }
 
-    // Construcción dinámica de actualizaciones parciales
-    const datosActualizados = {};
-
-    if (mail !== undefined) datosActualizados.mail = mail;
-    if (rol !== undefined) datosActualizados.rol = rol;
-
-    // Preserva subdocumento 'perfil' sin sobreescribir propiedades no enviadas
-    if (perfil) {
-      if (perfil.nombre !== undefined) datosActualizados['perfil.nombre'] = perfil.nombre;
-      if (perfil.apellido !== undefined) datosActualizados['perfil.apellido'] = perfil.apellido;
-      if (perfil.foto !== undefined) datosActualizados['perfil.foto'] = perfil.foto;
-    }
-
-    // Re-hashear clave solo si se provee una nueva
-    if (password) {
-      datosActualizados.password = await bcrypt.hash(password, SALT_ROUNDS);
-    }
+    // Construcción dinámica y limpia usando el spread operator (...)
+    const datosActualizados = {
+      ...(mail !== undefined && { mail }),
+      ...(rol !== undefined && { rol }),
+      ...(perfil?.nombre !== undefined && { 'perfil.nombre': perfil.nombre }),
+      ...(perfil?.apellido !== undefined && { 'perfil.apellido': perfil.apellido }),
+      ...(perfil?.foto !== undefined && { 'perfil.foto': perfil.foto }),
+      ...(password && { password: await bcrypt.hash(password, SALT_ROUNDS) })
+    };
 
     const actualizado = await Usuario.findByIdAndUpdate(
       id,
       { $set: datosActualizados },
-    // Actualizado 'new: true' a 'returnDocument: "after"' por obsolescencia en Mongoose
       { returnDocument: 'after', runValidators: true }
     );
 

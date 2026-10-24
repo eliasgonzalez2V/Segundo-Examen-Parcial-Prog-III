@@ -126,22 +126,22 @@ export const actualizarAnimal = async (req, res) => {
       }
   
       // Construcción dinámica de actualizaciones parciales
-      const datosActualizados = {};
-  
-      if (codigo !== undefined) datosActualizados.codigo = codigo;
-      if (especie !== undefined) datosActualizados.especie = especie;
-      if (clase !== undefined) datosActualizados.clase = clase;
-      if (subtipo !== undefined) datosActualizados.subtipo = subtipo;
-      if (origen !== undefined) datosActualizados.origen = origen;
-      if (fechaNacimiento !== undefined) datosActualizados.fechaNacimiento = fechaNacimiento;
-  
-      // Preserva subdocumento 'perfil' sin sobreescribir propiedades no enviadas
-      if (perfil) {
-        if (perfil.nombre !== undefined) datosActualizados['perfil.nombre'] = perfil.nombre;
-        if (perfil.sexo !== undefined) datosActualizados['perfil.sexo'] = perfil.sexo;
-        if (perfil.color !== undefined) datosActualizados['perfil.color'] = perfil.color;
-        if (perfil.senias_particulares !== undefined) datosActualizados['perfil.senias_particulares'] = perfil.senias_particulares;
-      }
+      const datosActualizados = {codigo: codigo !== undefined ? codigo : existente.codigo,
+            especie: especie !== undefined ? especie : existente.especie,
+            clase: clase !== undefined ? clase : existente.clase,
+            subtipo: subtipo !== undefined ? subtipo : existente.subtipo,
+            origen: origen !== undefined ? origen : existente.origen,
+            fechaNacimiento: fechaNacimiento !== undefined ? fechaNacimiento : existente.fechaNacimiento,
+            
+            // Para el subdocumento 'perfil' combinamos el spread operator (...) con ternarios 
+            perfil: {
+                ...existente.perfil, // Desparrama lo que ya tenía el perfil anterior
+                ...(perfil?.nombre !== undefined && { nombre: perfil.nombre }),
+                ...(perfil?.sexo !== undefined && { sexo: perfil.sexo }),
+                ...(perfil?.color !== undefined && { color: perfil.color }),
+                ...(perfil?.senias_particulares !== undefined && { senias_particulares: perfil.senias_particulares })
+            }
+          }
   
       const actualizado = await Animal.findByIdAndUpdate(
         id,

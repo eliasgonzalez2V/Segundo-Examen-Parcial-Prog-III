@@ -44,7 +44,21 @@ export const obtenerSeguimientoPorId = async (req, res) => {
     res.status(500).json({ mensaje: error.message });
   }
 };
+/* Vercion anterior de obtenerSeguimientosPorCodigo sin la integración con la API de Api-Ninjas
+export const obtenerSeguimientosPorCodigo = async (req, res) => {
+  try {
+    const { codigo } = req.params;
 
+    const seguimientos = await Seguimiento.find({ codigo }).populate('animalInfo');
+    if (seguimientos.length === 0) {
+      return res.status(404).json({ mensaje: "No se encontraron seguimientos para el código proporcionado" });
+    }
+
+    res.json(seguimientos);
+  } catch (error) {
+    res.status(500).json({ mensaje: error.message });
+  }
+};*/
 // ============================================================
 //  obtenerSeguimientosPorCodigo — GET /api/seguimientos/codigo/:codigo
 // ============================================================
@@ -59,11 +73,67 @@ export const obtenerSeguimientosPorCodigo = async (req, res) => {
       return res.status(404).json({ mensaje: "No se encontraron seguimientos para el código proporcionado" });
     }
 
-    res.json(seguimientos);
+    let animalSeleccionado = null;
+
+    // Verificamos que exista el primer seguimiento y contenga la información del animal y su subtipo
+    const primerSeguimiento = seguimientos[0];
+    if (primerSeguimiento.animalInfo.subtipo) {
+      const subtipo = primerSeguimiento.animalInfo.subtipo;
+      
+      // Realizamos la llamada a la API de Api-Ninjas codificando el subtipo para la URL
+      // encodeURIComponent Reemplaza casi todos los caracteres que no sean letras, dígitos [0-9], -, _, ., !, ~, ', *, y ( )
+      const url = `https://api.api-ninjas.com/v1/animals?name=${encodeURIComponent(subtipo)}`;
+      
+      const apiResponse = await fetch(url, {
+        headers: {
+          'X-Api-Key': process.env.API_NINJAS_KEY // Recuerda definir esta variable en tu archivo .env
+        }
+      });
+
+      if (apiResponse.ok) {
+        const resultados = await apiResponse.json();
+          
+        if (resultados && resultados.length > 0) {
+            // 1. Buscamos primero si hay una coincidencia exacta de nombre (ignorando mayúsculas)
+          let match = resultados.find(item => item.name.toLowerCase() === subtipo);
+
+            // 2. Si no hay una coincidencia exacta, buscamos el que contenga el subtipo o seleccionamos el más corto (que suele ser el principal, ej: "Golden Retriever" frente a "English Cream Golden Retriever")
+          if (!match) {
+            match = resultados.reduce((prev, current) => {
+              // Priorizamos el nombre cuya longitud sea menor (más directo) o que contenga la palabra clave
+              return current.name.length < prev.name.length ? current : prev; // operador ternario
+            });
+          }
+
+          animalSeleccionado = match;
+        }
+      } else {
+        console.error("Error al consultar la API Ninjas de animales");
+      }
+    }
+
+    // Retornamos los seguimientos y únicamente el animal más parecido
+    res.json({
+      seguimientos,
+      infoExterna: animalSeleccionado // Ahora es un único objeto en lugar de un array
+    });
+
   } catch (error) {
     res.status(500).json({ mensaje: error.message });
   }
 };
+
+
+
+
+
+
+
+
+
+
+
+
 
 // ============================================================
 //  crearSeguimiento — POST /api/seguimientos

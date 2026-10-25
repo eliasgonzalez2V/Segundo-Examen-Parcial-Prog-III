@@ -101,7 +101,7 @@ const animales = animalesSeed.map((a) => {
     codigo: a.codigo,
     especie: a.especie,
     clase: a.clase,
-    subtipo: a.subtipo,
+    raza: a.raza,
     origen: a.origen,
     fechaNacimiento: a.fechaNacimiento,
     perfil: a.perfil,

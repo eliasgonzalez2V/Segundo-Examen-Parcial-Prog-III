@@ -26,7 +26,7 @@ const animalSchema = new mongoose.Schema(
       required: [true, 'La clase es requerida'],
       trim: true,
     },
-    subtipo: {
+    raza: {
       type: String,
       trim: true,
     },

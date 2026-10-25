@@ -38,8 +38,8 @@ El **Sistema de Gestión y Administración de Rescate Animal** está diseñado p
 
 | Rol | Permisos y Funcionalidades |
 | :--- | :--- |
-| **Administrador** | • CRUD de usuarios (veterinarios y otros administradores).<br>• Supervisión general de estadísticas de la reserva.<br>• Auditoría de registros. |
-| **Veterinario** | • CRUD de animales rescatados.<br>• Gestión del estado del animal (ingreso, traslado, liberación, defunción).<br>• Carga y seguimiento de fichas médicas (peso, altura). |
+| **Administrador** | • CRUD de usuarios (veterinarios y otros administradores).• Supervisión general de estadísticas de la reserva.• Auditoría de registros. |
+| **Veterinario** | • CRUD de animales rescatados.• Gestión del estado del animal (ingreso, traslado, liberación, defunción).• Carga y seguimiento de fichas médicas (peso, altura). |
 
 ---
 

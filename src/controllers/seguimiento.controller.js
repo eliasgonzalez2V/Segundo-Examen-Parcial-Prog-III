@@ -44,21 +44,7 @@ export const obtenerSeguimientoPorId = async (req, res) => {
     res.status(500).json({ mensaje: error.message });
   }
 };
-/* Vercion anterior de obtenerSeguimientosPorCodigo sin la integración con la API de Api-Ninjas
-export const obtenerSeguimientosPorCodigo = async (req, res) => {
-  try {
-    const { codigo } = req.params;
 
-    const seguimientos = await Seguimiento.find({ codigo }).populate('animalInfo');
-    if (seguimientos.length === 0) {
-      return res.status(404).json({ mensaje: "No se encontraron seguimientos para el código proporcionado" });
-    }
-
-    res.json(seguimientos);
-  } catch (error) {
-    res.status(500).json({ mensaje: error.message });
-  }
-};*/
 // ============================================================
 //  obtenerSeguimientosPorCodigo — GET /api/seguimientos/codigo/:codigo
 // ============================================================
@@ -75,14 +61,14 @@ export const obtenerSeguimientosPorCodigo = async (req, res) => {
 
     let animalSeleccionado = null;
 
-    // Verificamos que exista el primer seguimiento y contenga la información del animal y su subtipo
+    // Verificamos que exista el primer seguimiento y contenga la información del animal y su raza
     const primerSeguimiento = seguimientos[0];
-    if (primerSeguimiento.animalInfo.subtipo) {
-      const subtipo = primerSeguimiento.animalInfo.subtipo;
+    if (primerSeguimiento.animalInfo.raza) {
+      const raza = primerSeguimiento.animalInfo.raza;
       
-      // Realizamos la llamada a la API de Api-Ninjas codificando el subtipo para la URL
+      // Realizamos la llamada a la API de Api-Ninjas codificando el raza para la URL
       // encodeURIComponent Reemplaza casi todos los caracteres que no sean letras, dígitos [0-9], -, _, ., !, ~, ', *, y ( )
-      const url = `https://api.api-ninjas.com/v1/animals?name=${encodeURIComponent(subtipo)}`;
+      const url = `https://api.api-ninjas.com/v1/animals?name=${encodeURIComponent(raza)}`;
       
       const apiResponse = await fetch(url, {
         headers: {
@@ -92,12 +78,13 @@ export const obtenerSeguimientosPorCodigo = async (req, res) => {
 
       if (apiResponse.ok) {
         const resultados = await apiResponse.json();
+        console.log("Conexion con la API_NINJAS exitosa");
           
         if (resultados && resultados.length > 0) {
             // 1. Buscamos primero si hay una coincidencia exacta de nombre (ignorando mayúsculas)
-          let match = resultados.find(item => item.name.toLowerCase() === subtipo);
+          let match = resultados.find(item => item.name.toLowerCase() === raza);
 
-            // 2. Si no hay una coincidencia exacta, buscamos el que contenga el subtipo o seleccionamos el más corto (que suele ser el principal, ej: "Golden Retriever" frente a "English Cream Golden Retriever")
+            // 2. Si no hay una coincidencia exacta, buscamos el que contenga el raza o seleccionamos el más corto (que suele ser el principal, ej: "Golden Retriever" frente a "English Cream Golden Retriever")
           if (!match) {
             match = resultados.reduce((prev, current) => {
               // Priorizamos el nombre cuya longitud sea menor (más directo) o que contenga la palabra clave
@@ -122,18 +109,6 @@ export const obtenerSeguimientosPorCodigo = async (req, res) => {
     res.status(500).json({ mensaje: error.message });
   }
 };
-
-
-
-
-
-
-
-
-
-
-
-
 
 // ============================================================
 //  crearSeguimiento — POST /api/seguimientos

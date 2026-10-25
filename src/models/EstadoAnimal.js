@@ -64,7 +64,7 @@ estadoAnimalSchema.virtual('animalInfo', {
 estadoAnimalSchema.set('toJSON', {
   virtuals: true,
   transform: (_doc, ret) => {
-    //delete ret._id;        <-- Oculta el _id de MongoDB
+    delete ret._id;        // Oculta el _id de MongoDB
     delete ret.__v;       // Remueve el número de versión
     delete ret.createdAt; // Oculta la fecha de creación de auditoría
     delete ret.updatedAt; // Oculta la fecha de actualización de auditoría

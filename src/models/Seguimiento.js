@@ -58,7 +58,7 @@ seguimientoSchema.virtual('animalInfo', {
 seguimientoSchema.set('toJSON', {
   virtuals: true,
   transform: (_doc, ret) => {
-    // delete ret._id;      // Descomenta si deseas ocultar el _id propio del seguimiento
+    delete ret._id;       // ocultar el _id propio del seguimiento
     delete ret.__v;       // Remueve el número de versión
     delete ret.createdAt; // Oculta la fecha de creación de auditoría
     delete ret.updatedAt; // Oculta la fecha de actualización de auditoría

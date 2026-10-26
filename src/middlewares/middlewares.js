@@ -19,7 +19,7 @@ export const authToken = (req, res, next) => {
 
     // 3. Verificar si el token es válido
     // Reemplaza 'TU_CLAVE_SECRETA' por tu variable de entorno (ej: process.env.JWT_SECRET)
-    const SECRET_KEY = process.env.JWT_SECRET || 'claveblablabla';
+    const SECRET_KEY = process.env.JWT_SECRET;
 
     jwt.verify(token, SECRET_KEY, (err, user) => {
         if (err) {

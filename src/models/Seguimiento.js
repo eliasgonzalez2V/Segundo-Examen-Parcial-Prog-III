@@ -62,6 +62,10 @@ seguimientoSchema.set('toJSON', {
     delete ret.__v;       // Remueve el número de versión
     delete ret.createdAt; // Oculta la fecha de creación de auditoría
     delete ret.updatedAt; // Oculta la fecha de actualización de auditoría
+    if (ret.animalInfo) {
+      delete ret.animalInfo.codigo;
+      delete ret.animalInfo.perfil;
+    }
     return ret;
   },
 });

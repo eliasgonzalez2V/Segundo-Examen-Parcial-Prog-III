@@ -8,6 +8,9 @@ import express from 'express';
 // bloquearía las llamadas.
 import cors from 'cors';
 
+//Importa lo que tengo en el .env
+import 'dotenv/config'; 
+
 // Importa mongoose, para conectar con la BD de MongDB
 import mongoose from 'mongoose';
 
@@ -22,7 +25,8 @@ import {loginUsuario} from './controllers/usuario.controller.js';
 
 // Importamos la constante PORT desde nuestro archivo de config.
 // Si existe la variable de entorno PORT la usa, si no, 3000.
-import { PORT } from './config/env.js';
+//import { PORT } from '../.env';
+const PORT = process.env.PORT;
 
 // --- Creación de la app ---
 // express() devuelve un objeto "app" que representa al servidor.

@@ -19,19 +19,19 @@ import { logInfoCli, authToken, esAdmin } from '../middlewares/middlewares.js';
 const router = express.Router();
 
 // GET /api/animales -> listar todos
-router.get('/', logInfoCli, obtenerAnimales);
+router.get('/', logInfoCli,/* authToken,*/  obtenerAnimales);
 
 // GET /api/animales/:id -> obtener uno
-router.get('/:id',logInfoCli, obtenerAnimalPorId);
+router.get('/:id',logInfoCli,/* authToken,*/  obtenerAnimalPorId);
 
 // GET /api/animales/codigo/:codigo -> obtener uno por código
-router.get('/codigo/:codigo', logInfoCli, obtenerAnimalPorCodigo);
+router.get('/codigo/:codigo', logInfoCli,/* authToken,*/  obtenerAnimalPorCodigo);
 
 // POST /api/animales -> crear uno
-router.post('/',logInfoCli, crearAnimal);
+router.post('/',logInfoCli,/* authToken,*/  crearAnimal);
 
 // PUT /api/animales/:id -> actualizar uno
-router.put('/:id', logInfoCli, actualizarAnimal);
+router.put('/:id', logInfoCli,/* authToken,*/  actualizarAnimal);
 
 // DELETE /api/animales/:id -> eliminar uno
 router.delete('/:id', logInfoCli,/* authToken, esAdmin, */eliminarAnimal);

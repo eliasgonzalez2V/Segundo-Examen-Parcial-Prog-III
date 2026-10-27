@@ -31,7 +31,7 @@ router.get('/codigo/:codigo', logInfoCli, authToken,  obtenerEstadoAnimalPorCodi
 router.post('/',logInfoCli, authToken,  crearEstadoAnimal);
 
 // PUT /api/estados/:id -> actualizar uno
-router.put('/:id', logInfoCli, authToken, actualizarEstadoAnimal);
+router.put('/:id', logInfoCli, authToken,esAdmin, actualizarEstadoAnimal);
 
 // DELETE /api/estados/:id -> eliminar uno
 router.delete('/:id', logInfoCli, authToken, esAdmin, eliminarEstadoAnimal);

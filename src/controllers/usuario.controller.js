@@ -91,6 +91,7 @@ export const crearUsuario = async (req, res) => {
       return res.status(400).json({ mensaje: `Ya existe un usuario con el mail: ${mail}` });
     }
 
+    password.length >= 8 ? console.log("calve valida"): res.status(400).json({ mensaje: `password invalido, debe tener 8 caracteres` });
     const claveHasheada = await bcrypt.hash(password, SALT_ROUNDS);
 
     const nuevoUsuario = new Usuario({
@@ -121,7 +122,7 @@ export const actualizarUsuario = async (req, res) => {
   // Ya verificas que exista, o puedes dejar que el db.js lo maneje
   try {
     const { id } = req.params;
-    const { mail, rol, perfil, password } = req.body;
+    const { mail, perfil, password } = req.body;
 
     const existente = await Usuario.findById(id);
     if (!existente) {
@@ -131,7 +132,6 @@ export const actualizarUsuario = async (req, res) => {
     // Construcción dinámica y limpia usando el spread operator (...)
     const datosActualizados = {
       ...(mail !== undefined && { mail }),
-      ...(rol !== undefined && { rol }),
       ...(perfil?.nombre !== undefined && { 'perfil.nombre': perfil.nombre }),
       ...(perfil?.apellido !== undefined && { 'perfil.apellido': perfil.apellido }),
       ...(perfil?.foto !== undefined && { 'perfil.foto': perfil.foto }),

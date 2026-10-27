@@ -32,7 +32,7 @@ router.get('/mail/:mail', logInfoCli, authToken, esAdmin, obtenerUsuarioPorMail)
 router.get('/:id', logInfoCli, authToken, esAdmin, obtenerUsuarioPorId);
 
 // POST /api/usuarios -> crear uno
-router.post('/', logInfoCli,/* authToken,*/  crearUsuario);
+router.post('/', logInfoCli, authToken,  crearUsuario);
 
 // PUT /api/usuarios/:id -> actualizar uno
 router.put('/:id', logInfoCli, authToken, actualizarUsuario);

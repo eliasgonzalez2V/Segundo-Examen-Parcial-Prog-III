@@ -200,7 +200,7 @@ export const loginUsuario = async (req, res) => {
       { id: usu._id, rol: usu.rol },
     //Esto realiza Generar el JWT con el payload del usuario
       process.env.JWT_SECRET,
-      { expiresIn: "30000" }
+      { expiresIn: "30m" }
     );
 
     // 4. Responder con éxito
@@ -214,3 +214,4 @@ export const loginUsuario = async (req, res) => {
     return res.status(500).json({ mensaje: "Error interno del servidor" });
   }
 };
+

@@ -19,21 +19,21 @@ import { logInfoCli, authToken, esAdmin } from '../middlewares/middlewares.js';
 const router = express.Router();
 
 // GET /api/seguimientos -> listar todos los seguimientos
-router.get('/', logInfoCli,/* authToken,*/  obtenerSeguimientos);
+router.get('/', logInfoCli, authToken,  obtenerSeguimientos);
 
 // GET /api/seguimientos/:id -> obtener un seguimiento específico por su ID
-router.get('/:id', logInfoCli,/* authToken,*/  obtenerSeguimientoPorId);
+router.get('/:id', logInfoCli, authToken,  obtenerSeguimientoPorId);
 
 // GET /api/seguimientos/codigo/:codigo -> obtener el historial de seguimientos de un animal por su código
-router.get('/codigo/:codigo', logInfoCli,/* authToken,*/  obtenerSeguimientosPorCodigo);
+router.get('/codigo/:codigo', logInfoCli, authToken,  obtenerSeguimientosPorCodigo);
 
 // POST /api/seguimientos -> registrar un nuevo control/seguimiento
-router.post('/', logInfoCli,/* authToken,*/  crearSeguimiento);
+router.post('/', logInfoCli, authToken,  crearSeguimiento);
 
 // PUT /api/seguimientos/:id -> actualizar un seguimiento por su ID
-router.put('/:id', logInfoCli,/* authToken,*/  actualizarSeguimiento);
+router.put('/:id', logInfoCli, authToken,  actualizarSeguimiento);
 
 // DELETE /api/seguimientos/:id -> eliminar un seguimiento por su ID
-router.delete('/:id', logInfoCli, /* authToken, esAdmin, */ eliminarSeguimiento);
+router.delete('/:id', logInfoCli, authToken, esAdmin, eliminarSeguimiento);
 
 export default router;

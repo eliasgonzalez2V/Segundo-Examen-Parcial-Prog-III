@@ -63,7 +63,7 @@ export const obtenerSeguimientosPorCodigo = async (req, res) => {
 
     // Verificamos que exista el primer seguimiento y contenga la información del animal y su raza
     const primerSeguimiento = seguimientos[0];
-    if (primerSeguimiento.animalInfo.raza) {
+    if (primerSeguimiento.animalInfo && primerSeguimiento.animalInfo.raza) {
       const raza = primerSeguimiento.animalInfo.raza;
       
       // Realizamos la llamada a la API de Api-Ninjas codificando el raza para la URL

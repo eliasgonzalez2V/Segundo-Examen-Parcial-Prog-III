@@ -26,7 +26,6 @@ El **Sistema de Gestión y Administración de Rescate Animal** está diseñado p
 El proyecto adopta una arquitectura desacoplada con repositorios independientes para Frontend y Backend:
 
 * **Backend (API REST):** Desarrollado con Node.js, Express y Mongoose. Express no renderiza vistas en el servidor, sino que expone exclusivamente endpoints RESTful que devuelven datos en formato JSON.
-* **Frontend (SPA):** Single Page Application independiente construida con HTML5, CSS3 y JavaScript nativo, la cual consume la API REST del backend.
 * **Base de Datos:** MongoDB.
 * **Entorno de Desarrollo:** Visual Studio Code.
 * **API Externa:** [API Ninjas - Animals](https://api-ninjas.com/api/animals) (utilizada como servicio complementario de consulta y referencia).
@@ -71,4 +70,5 @@ El backend expone una API REST organizada mediante los siguientes prefijos de ru
 
 ## 📌 Estado del Proyecto
 
+El proyecto de manera manual corre en: https://segundo-examen-parcial-prog-iii.onrender.com
 🚧 *En desarrollo activo.*

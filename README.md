@@ -2,65 +2,73 @@
 
 # 🐾 Sistema de Gestión y Administración de Rescate Animal
 
-
 ---
 
 ## 📋 Descripción del Proyecto
 
-El **Sistema de Gestión y Administración de Rescate Animal** está diseñado para optimizar las tareas administrativas y clínicas dentro de una reserva de fauna. Permite llevar un control exhaustivo del ciclo de vida de los animales (desde su ingreso hasta su egreso), centralizar los historiales médicos de los veterinarios y validar la evolución de los animales contrastándola con parámetros estándar obtenidos mediante una API externa.
+El **Sistema de Gestión y Administración de Rescate Animal** está diseñado para optimizar las tareas administrativas y clínicas dentro de una reserva de fauna. Permite llevar un control exhaustivo del ciclo de vida de los animales (desde su ingreso hasta su egreso), centralizar los historiales médicos registrados por los **Veterinarios** (**Usuario Final** principal del sistema) y consultar parámetros estándar de referencia mediante una API externa.
 
 ---
 
 ## 🚀 Características Principales
 
-*   **Gestión de Usuarios y Roles:** Control de acceso diferenciado para Administradores (gestión de personal) y Veterinarios (atención y registros clínicos).
-*   **CRUD Completo de Animales:** Registro de ingresos, actualización de datos y control de egresos (traslados, liberaciones o defunciones con fecha y motivo).
-*   **Estadísticas Grupales:** Se hará un seguimiento de los ingresos y defunciones por fecha, del total de animales en la reserva y según su tipo de especie.
-*   **Seguimiento Clínico y Evolutivo:** Carga periódica de peso, altura y observaciones médicas.
-*   **Integración con API Externa:** Consulta de valores estándar de referencia según la especie para evaluar el estado nutricional y físico del animal.
-*   **Arquitectura MVC Pura:** Separación clara entre la lógica de negocio, las rutas, los controladores y las vistas nativas.
+* **Gestión de Usuarios y Roles:** Control de acceso diferenciado entre Administradores (gestión de personal y auditoría) y Veterinarios (Usuario Final que realiza la atención y los registros clínicos).
+* **CRUD Completo de Animales:** Registro de datos fijos del animal (código, especie, clase, origen, fecha de nacimiento), actualización de datos y control de egresos.
+* **Ciclo de Vida y Estados:** Registro histórico de movimientos mediante la colección de estados (`En reserva`, `Trasladado`, `Liberado`, `Fallecido`) vinculados al código del animal.
+* **Seguimiento Clínico y Evolutivo:** Carga periódica de peso, altura y observaciones médicas por parte del veterinario.
+* **Estadísticas Grupales:** Seguimiento de ingresos y egresos por fecha, total de animales en la reserva y desglose por especie y clase.
+* **Integración Complementaria con API Externa:** Consulta y comparación de datos biológicos estándar de referencia según la especie. Funciona como una herramienta de consulta informativa que no representa una dependencia crítica para la operatividad del sistema ni abarca diagnósticos clínicos.
 
 ---
 
-## 🛠️ Tecnologías y Herramientas
+## 🛠️ Tecnologías y Arquitectura
 
-*   **Entorno de Desarrollo:** Visual Studio Code
-*   **Asistente de IA:** Kilo Code
-*   **Arquitectura:** Patrón MVC (Modelo-Vista-Controlador)
-*   **Backend:** Node.js con Express
-*   **Base de Datos:** MongoDB
-*   **Vistas:** HTML5, CSS3 y JavaScript nativo
-*   **API Externa:** [API Ninjas - Animals](https://api-ninjas.com/api/animals)
+El proyecto adopta una arquitectura desacoplada con repositorios independientes para Frontend y Backend:
+
+* **Backend (API REST):** Desarrollado con Node.js, Express y Mongoose. Express no renderiza vistas en el servidor, sino que expone exclusivamente endpoints RESTful que devuelven datos en formato JSON.
+* **Frontend (SPA):** Single Page Application independiente construida con HTML5, CSS3 y JavaScript nativo, la cual consume la API REST del backend.
+* **Base de Datos:** MongoDB.
+* **Entorno de Desarrollo:** Visual Studio Code.
+* **API Externa:** [API Ninjas - Animals](https://api-ninjas.com/api/animals) (utilizada como servicio complementario de consulta y referencia).
 
 ---
 
 ## 👥 Roles y Permisos del Sistema
 
-| Rol | Permisos y Funcionalidades |
-| :--- | :--- |
-| **Administrador** | • CRUD de usuarios (veterinarios y otros administradores).• Supervisión general de estadísticas de la reserva.• Auditoría de registros. |
-| **Veterinario** | • CRUD de animales rescatados.• Gestión del estado del animal (ingreso, traslado, liberación, defunción).• Carga y seguimiento de fichas médicas (peso, altura). |
+| Rol | Clasificación | Permisos y Funcionalidades |
+| :--- | :--- | :--- |
+| **`ADMIN`** | Gestión de Sistema | • CRUD de usuarios (veterinarios y administradores).<br>• Supervisión general de estadísticas de la reserva.<br>• Auditoría de registros. |
+| **`VETER`** | **Usuario Final** | • CRUD de animales rescatados.<br>• Gestión del estado del animal (ingresos, traslados, liberaciones, defunciones).<br>• Carga y seguimiento de fichas médicas (peso, altura, observaciones). |
 
 ---
 
 ## 🗄️ Estructura de Base de Datos (MongoDB)
 
-*   **Colección `usuarios`:**
-    *   `_id`, `nombre`, `apellido`, `email`, `password`, `rol` (`admin` / `veter`), `imagen`
-*   **Colección `animales`:**
-    *   `_id`, `codigo`, `especie`, `raza`, `edad_estimada`
-*   **Colección `estado_animal`:**
-    *   `_id`, `animal_id`, `fecha_ingreso`, `estado` (`En reserva` / `Trasladado` / `Liberado` / `Fallecido`), `fecha_egreso`, `descripción`
-*   **Colección `seguimientos`:**
-    *   `_id`, `animal_id` (Referencia), `fecha_control`, `peso`, `altura`, `observaciones`
+Las colecciones y modelos Mongoose implementados responden directamente a los casos de uso del sistema:
+
+* **Colección `users` (Modelo `Usuario`):**
+  * `mail` *(único)*, `password` *(select: false)*, `rol` (`ADMIN` / `VETER`), `perfil` `{ nombre, apellido, foto }`, `createdAt`, `updatedAt`
+* **Colección `animales` (Modelo `Animal`):**
+  * `codigo` *(clave única de negocio)*, `especie`, `clase`, `raza`, `origen`, `fechaNacimiento`, `perfil` `{}`
+* **Colección `estados` (Modelo `EstadoAnimal`):**
+  * `codigo` *(referencia al animal)*, `fecha_ingreso`, `estado` (`En reserva` / `Trasladado` / `Liberado` / `Fallecido`), `fecha_egreso`, `descripcion`, `animalInfo` *(virtual populates)*
+* **Colección `seguimientos` (Modelo `Seguimiento`):**
+  * `codigo` *(referencia al animal)*, `fecha_control`, `peso`, `altura`, `observaciones`, `animalInfo` *(virtual populates)*
+
+---
+
+## 🔌 Endpoints de la API REST
+
+El backend expone una API REST organizada mediante los siguientes prefijos de rutas:
+
+* **`POST /api/login`** — Autenticación de usuarios y emisión de token JWT.
+* **`/api/usuarios`** — Gestión de usuarios, perfiles y control de roles (`ADMIN` / `VETER`).
+* **`/api/animales`** — ABM (CRUD) de los datos fijos de los animales registrados en la reserva.
+* **`/api/estados`** — Gestión del ciclo de vida y movimientos de los animales (`En reserva`, `Trasladado`, `Liberado`, `Fallecido`).
+* **`/api/seguimientos`** — Registro de controles médicos y evolutivos periódicos (peso, altura, observaciones).
 
 ---
 
 ## 📌 Estado del Proyecto
 
-🚧 *En desarrollo activo bajo la guía de Kilo Code.*
-
-### link de la api externa 
-#https://api--ninjas-com.translate.goog/api/animals?_x_tr_sl=en&_x_tr_tl=es&_x_tr_hl=es&_x_tr_pto=tc&_x_tr_hist=true
-
-GET https://api.api-ninjas.com/v1/animals?name=cheetah
+🚧 *En desarrollo activo.*

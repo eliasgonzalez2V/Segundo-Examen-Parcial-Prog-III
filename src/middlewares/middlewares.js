@@ -35,7 +35,7 @@ export const authToken = (req, res, next) => {
 export const esAdmin = (req, res, next) => {
     // 1. Verificar si el objeto req.user existe y si el rol del usuario es "admin"
     if (!req.user || req.user.rol !== 'ADMIN') {
-        return res.status(403).json({ mensaje: "no sos admin" });
+        return res.status(403).json({ mensaje: "no sos Administrador" });
     }
 
     next();

@@ -91,6 +91,13 @@ export const crearUsuario = async (req, res) => {
       return res.status(400).json({ mensaje: `Ya existe un usuario con el mail: ${mail}` });
     }
 
+    // Validacion de contraseña de 8 caracteres
+    if(!password || typeof password !== 'string' || password.length < 8) {
+      return res.status(400).json({ 
+        mensaje: "password invalido, debe tener al menos 8 caracteres ,una mayuscula, una minuscula y un numero"
+      });
+    }
+
     password.length >= 8 ? console.log("calve valida"): res.status(400).json({ mensaje: `password invalido, debe tener 8 caracteres` });
     const claveHasheada = await bcrypt.hash(password, SALT_ROUNDS);
 

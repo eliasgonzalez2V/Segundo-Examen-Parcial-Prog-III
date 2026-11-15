@@ -125,8 +125,17 @@ export const actualizarAnimal = async (req, res) => {
         return res.status(404).json({ mensaje: "Animal no encontrado" });
       }
   
+      //Validacion para que no modifiquen el codigo
+      if (codigo !== undefined && codigo !== existente.codigo) {
+        return res.status(400).json({ 
+          mensaje: "El código del animal no puede cambiarse, ya que se perderia el historial clínico." 
+        });
+      }
+
       // Construcción dinámica de actualizaciones parciales
-      const datosActualizados = {codigo: codigo !== undefined ? codigo : existente.codigo,
+      const datosActualizados = {
+            // Siempre se mantiene el codigo
+            codigo : existente.codigo,
             especie: especie !== undefined ? especie : existente.especie,
             clase: clase !== undefined ? clase : existente.clase,
             raza: raza !== undefined ? raza : existente.raza,

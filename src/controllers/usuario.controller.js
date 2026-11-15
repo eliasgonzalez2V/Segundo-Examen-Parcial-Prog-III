@@ -128,10 +128,27 @@ export const actualizarUsuario = async (req, res) => {
       return res.status(404).json({ mensaje: "Usuario no encontrado" });
     }
 
+    // --- PROTECCIÓN CONTRA ESCALAMIENTO DE PRIVILEGIOS ---
+    let rolAActualizar = undefined;
+
+    // Solo validamos si el cliente decidió enviar el campo 'rol' en la petición
+    if (rol !== undefined) {
+      // Verificamos si el usuario autenticado (req.user) es realmente ADMIN
+      const esAdministrador = req.user && req.user.rol === 'ADMIN';
+
+      if (!esAdministrador) {
+        return res.status(403).json({ 
+          mensaje: "No tienes permisos para actualizar el rol" 
+        });
+      }
+
+      rolAActualizar = rol; // Si es admin, le permitimos cambiarlo
+    }
+
     // Construcción dinámica y limpia usando el spread operator (...)
     const datosActualizados = {
       ...(mail !== undefined && { mail }),
-      ...(rol !== undefined && { rol }),
+      ...(rolAActualizar !== undefined && { rol: rolAActualizar }),
       ...(perfil?.nombre !== undefined && { 'perfil.nombre': perfil.nombre }),
       ...(perfil?.apellido !== undefined && { 'perfil.apellido': perfil.apellido }),
       ...(perfil?.foto !== undefined && { 'perfil.foto': perfil.foto }),

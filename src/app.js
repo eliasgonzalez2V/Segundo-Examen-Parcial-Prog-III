@@ -65,6 +65,10 @@ app.post('/api/login', loginUsuario);
 
 // Conexión con la BD
 
+// 1. Desactivamos el modo de consulta estricto de Mongoose para evitar
+// avisos de obsolescencia (Deprecation Warnings) en versiones previas a v7.
+mongoose.set('strictQuery', false);
+
 try {
   await mongoose.connect(process.env.MONGO_URI);
   console.log('Base de datos conectada exitosamente a MongoDB Atlas');

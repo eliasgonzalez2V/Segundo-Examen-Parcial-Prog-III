@@ -45,7 +45,7 @@ El proyecto adopta una arquitectura desacoplada con repositorios independientes 
 
 Las colecciones y modelos Mongoose implementados responden directamente a los casos de uso del sistema:
 
-* **Colección `users` (Modelo `Usuario`):**
+* **Colección `usuarios` (Modelo `Usuario`):**
   * `mail` *(único)*, `password` *(select: false)*, `rol` (`ADMIN` / `VETER`), `perfil` `{ nombre, apellido, foto }`, `createdAt`, `updatedAt`
 * **Colección `animales` (Modelo `Animal`):**
   * `codigo` *(clave única de negocio)*, `especie`, `clase`, `raza`, `origen`, `fechaNacimiento`, `perfil` `{}`

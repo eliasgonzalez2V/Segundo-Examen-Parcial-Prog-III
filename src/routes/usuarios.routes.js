@@ -35,7 +35,7 @@ router.get('/:id', logInfoCli, authToken, esAdmin, obtenerUsuarioPorId);
 router.post('/', logInfoCli,  crearUsuario);
 
 // PUT /api/usuarios/:id -> actualizar uno
-router.put('/:id', logInfoCli, authToken, actualizarUsuario);
+router.put('/:id', logInfoCli, authToken,esAdmin, actualizarUsuario);
 
 // DELETE /api/usuarios/:id -> eliminar uno
 router.delete('/:id', logInfoCli, authToken, esAdmin, eliminarUsuario);

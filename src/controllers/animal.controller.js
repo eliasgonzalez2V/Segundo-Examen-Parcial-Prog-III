@@ -13,6 +13,7 @@
 // ============================================================
 
 import { Animal } from "../models/Animal.js";
+import { Seguimiento } from '../models/Seguimiento.js';
 
 // ============================================================
 //  obtenerAnimales — GET /api/animales
@@ -174,13 +175,26 @@ export const eliminarAnimal = async (req, res) => {
     try {
       const { id } = req.params;
   
-      const eliminado = await Animal.findByIdAndDelete(id);
+      // Chequeo de que exista el animal
+      const eliminado = await Animal.findById(id);
       if (!eliminado) {
         return res.status(404).json({ mensaje: "Animal no encontrado" });
       }
   
-      res.status(204).send();
-      console.log("Animal eliminado");
+      // Verificación de seguimientos medicos del animal
+      const tieneSeguimientos = await Seguimiento.exists({ codigo: eliminado.codigo });
+
+      if (tieneSeguimientos) {
+        return res.status(400).json({ 
+          mensaje: "No se puede eliminar el animal porque tiene seguimientos médicos asociados." 
+        });
+      }
+
+      // No posee seguimientos, puede ser eliminado
+      await Animal.findByIdAndDelete(id);
+
+      res.status(200).json({ mensaje: "Animal eliminado correctamente" });
+      console.log("Animal eliminado (no posee seguimientos médicos asociados):", eliminado._id);
     } catch (error) {
       res.status(500).json({ mensaje: error.message });
     }

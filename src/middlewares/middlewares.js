@@ -10,7 +10,10 @@ export const logInfoCli = (req, resp, next) => {
 export const authToken = (req, res, next) => {
     // 1. Obtener el encabezado 'Authorization' (se espera: "Bearer <token>")
     const authHeader = req.headers['authorization'] || req.headers['Authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+    //Si no viene header, o viene mal escrito sin "Bearer " adelante, deja token en null
+    const token = authHeader && authHeader.startsWith('Bearer ')
+        ? authHeader.split(' ')[1]
+        : null;
 
     // 2. Si no viene token, retornar 401
     if (!token) {

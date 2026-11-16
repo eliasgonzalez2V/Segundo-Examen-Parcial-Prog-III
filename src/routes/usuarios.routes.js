@@ -32,10 +32,10 @@ router.get('/mail/:mail', logInfoCli, authToken, esAdmin, obtenerUsuarioPorMail)
 router.get('/:id', logInfoCli, authToken, esAdmin, obtenerUsuarioPorId);
 
 // POST /api/usuarios -> crear uno
-router.post('/', logInfoCli,  crearUsuario);
+router.post('/', logInfoCli, crearUsuario);
 
 // PUT /api/usuarios/:id -> actualizar uno
-router.put('/:id', logInfoCli, authToken,esAdmin, actualizarUsuario);
+router.put('/:id', logInfoCli, authToken, esAdmin, actualizarUsuario);
 
 // DELETE /api/usuarios/:id -> eliminar uno
 router.delete('/:id', logInfoCli, authToken, esAdmin, eliminarUsuario);

@@ -92,13 +92,12 @@ export const crearUsuario = async (req, res, next) => {
     }
 
     // Validacion de contraseña de 8 caracteres
-    if(!password || typeof password !== 'string' || password.length < 8) {
-      return res.status(400).json({ 
+    if (!password || typeof password !== 'string' || password.length < 8) {
+      return res.status(400).json({
         mensaje: "password invalido, debe tener al menos 8 caracteres ,una mayuscula, una minuscula y un numero"
       });
     }
 
-    password.length >= 8 ? console.log("calve valida"): res.status(400).json({ mensaje: `password invalido, debe tener 8 caracteres` });
     const claveHasheada = await bcrypt.hash(password, SALT_ROUNDS);
 
     const nuevoUsuario = new Usuario({
@@ -129,12 +128,13 @@ export const actualizarUsuario = async (req, res, next) => {
   // Ya verificas que exista, o puedes dejar que el db.js lo maneje
   try {
     const { id } = req.params;
-    const { mail, perfil, password } = req.body;
+    const { mail, rol, perfil, password } = req.body;
 
     const existente = await Usuario.findById(id);
     if (!existente) {
       return res.status(404).json({ mensaje: "Usuario no encontrado" });
     }
+
 
     // --- PROTECCIÓN CONTRA ESCALAMIENTO DE PRIVILEGIOS ---
     let rolAActualizar = undefined;
@@ -144,9 +144,9 @@ export const actualizarUsuario = async (req, res, next) => {
       // Verificamos si el usuario autenticado (req.user) es realmente ADMIN
       const esAdministrador = req.user && req.user.rol === 'ADMIN';
 
-      if (!esAdministrador) {
-        return res.status(403).json({ 
-          mensaje: "No tienes permisos para actualizar el rol" 
+      if (rol === 'ADMIN') {
+        return res.status(403).json({
+          mensaje: "No esta permitido asignar el rol 'ADMIN' a otro usuario"
         });
       }
 
@@ -223,7 +223,7 @@ export const loginUsuario = async (req, res, next) => {
 
     const token = jwt.sign(
       { id: usu.id, rol: usu.rol },
-    //Esto realiza Generar el JWT con el payload del usuario
+      //Esto realiza Generar el JWT con el payload del usuario
       process.env.JWT_SECRET,
       { expiresIn: "30m" }
     );

@@ -5,8 +5,8 @@ export const manejarNoEncontrado = (req, res, next) => {
 
 // Middleware global de errores clasificados (400, 401, 403, 404, 409, 500)
 export const manejarErroresGlobales = (err, req, res, next) => {
-  
-    //Aca se ve que le llega
+
+  //Aca se ve que le llega
   console.log("--- OBJETO DE ERROR RECIBIDO ---", {
     name: err.name,
     code: err.code,

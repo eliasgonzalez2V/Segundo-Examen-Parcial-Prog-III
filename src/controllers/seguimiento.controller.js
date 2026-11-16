@@ -63,18 +63,18 @@ export const obtenerSeguimientosPorCodigo = async (req, res, next) => {
 
     // Verificamos de forma segura que exista el primer seguimiento y contenga la información del animal y su raza
     const primerSeguimiento = seguimientos[0];
-    
+
     if (primerSeguimiento && primerSeguimiento.animalInfo && primerSeguimiento.animalInfo.raza) {
       const especie = primerSeguimiento.animalInfo.especie ? primerSeguimiento.animalInfo.especie.toLowerCase() : '';
       const raza = primerSeguimiento.animalInfo.raza;
-      
+
       // Envolvemos el fetch en su propio try/catch para que un fallo de red o timeout 
       // jamás tire abajo la lectura del historial local.
 
-      try{
-          // Realizamos la llamada a la API de Api-Ninjas codificando el raza para la URL
-          // encodeURIComponent Reemplaza casi todos los caracteres que no sean letras, dígitos [0-9], -, _, ., !, ~, ', *, y ( )
-          // DECISIÓN INTELIGENTE DE ENDPOINT:
+      try {
+        // Realizamos la llamada a la API de Api-Ninjas codificando el raza para la URL
+        // encodeURIComponent Reemplaza casi todos los caracteres que no sean letras, dígitos [0-9], -, _, ., !, ~, ', *, y ( )
+        // DECISIÓN INTELIGENTE DE ENDPOINT:
         let url = `https://api.api-ninjas.com/v1/animals?name=${encodeURIComponent(raza)}`; // Default silvestre
 
         if (especie.includes('perro') || especie.includes('canino')) {
@@ -82,36 +82,36 @@ export const obtenerSeguimientosPorCodigo = async (req, res, next) => {
         } else if (especie.includes('gato') || especie.includes('felino')) {
           url = `https://api.api-ninjas.com/v1/cats?name=${encodeURIComponent(raza)}`;
         }
-      
-          const apiResponse = await fetch(url, {
-            headers: {
+
+        const apiResponse = await fetch(url, {
+          headers: {
             'X-Api-Key': process.env.API_NINJAS_KEY // Recuerda definir esta variable en tu archivo .env
-            }
-          });
+          }
+        });
 
-          if (apiResponse.ok) {
-            const resultados = await apiResponse.json();
-            console.log("Conexion con la API_NINJAS exitosa");
+        if (apiResponse.ok) {
+          const resultados = await apiResponse.json();
+          console.log("Conexion con la API_NINJAS exitosa");
 
-            if (resultados && resultados.length > 0) {
+          if (resultados && resultados.length > 0) {
             // 1. Buscamos primero si hay una coincidencia exacta de nombre (ignorando mayúsculas)
-          let match = resultados.find(item => item.name.toLowerCase() === raza.toLowerCase());
+            let match = resultados.find(item => item.name.toLowerCase() === raza.toLowerCase());
 
             // 2. Si no hay una coincidencia exacta, buscamos el que contenga el raza o seleccionamos el más corto (que suele ser el principal, ej: "Golden Retriever" frente a "English Cream Golden Retriever")
-          if (!match) {
-            match = resultados.reduce((prev, current) => {
-              // Priorizamos el nombre cuya longitud sea menor (más directo) o que contenga la palabra clave
-              return current.name.length < prev.name.length ? current : prev; // operador ternario
-            });
-          }
+            if (!match) {
+              match = resultados.reduce((prev, current) => {
+                // Priorizamos el nombre cuya longitud sea menor (más directo) o que contenga la palabra clave
+                return current.name.length < prev.name.length ? current : prev; // operador ternario
+              });
+            }
 
-          animalSeleccionado = match;
+            animalSeleccionado = match;
+          }
+        } else {
+          console.error("Error al consultar la API Ninjas de animales");
+          animalSeleccionado = { aviso: "Información externa no disponible temporalmente" };
         }
-      } else {
-        console.error("Error al consultar la API Ninjas de animales");
-        animalSeleccionado = { aviso: "Información externa no disponible temporalmente" };
-        }
-      }catch (fetchError) {
+      } catch (fetchError) {
         //Si la api falla por red, se captura sin romper la respuesta de seguimiento
         console.error("Error de red o timeout al consultar la API Ninjas de animales:", fetchError);
         animalSeleccionado = { aviso: "Error de conexión con el servicio externo" };
@@ -153,7 +153,7 @@ export const crearSeguimiento = async (req, res, next) => {
     });
 
     const creado = await nuevoSeguimiento.save();
-    
+
     // Poblamos la info del animal antes de responder para que el cliente lo reciba completo
     await creado.populate('animalInfo');
 
@@ -187,7 +187,7 @@ export const actualizarSeguimiento = async (req, res, next) => {
       }
     }
 
-// Construcción dinámica limpia usando el spread operator
+    // Construcción dinámica limpia usando el spread operator
     const datosActualizados = {
       ...(codigo !== undefined && { codigo }),
       ...(fecha_control !== undefined && { fecha_control }),

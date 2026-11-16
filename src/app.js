@@ -20,7 +20,7 @@ import animalesRoutes from './routes/animales.routes.js';
 import estadoAnimalesRoutes from './routes/estadoanimales.routes.js';
 import seguimientosRoutes from './routes/seguimientos.routes.js';
 
-import {loginUsuario} from './controllers/usuario.controller.js';
+import { loginUsuario } from './controllers/usuario.controller.js';
 
 // Middlewares de errores
 import { manejarNoEncontrado, manejarErroresGlobales } from './middlewares/error.middlewares.js';
@@ -87,17 +87,17 @@ try {
 
   // Agregamos serverSelectionTimeoutMS para que si falla o no la encuentra, 
   // tire error rápido en lugar de quedar intentando colgado en segundo plano.
-  await mongoose.connect(process.env.MONGO_URI,{
+  await mongoose.connect(process.env.MONGO_URI, {
     serverSelectionTimeoutMS: 5000, // 5 segundos
   });
   console.log('Base de datos conectada exitosamente a MongoDB Atlas');
-// --- Encender el servidor ---
-// app.listen(PORT, callback) pone al servidor a "escuchar"
-// peticiones TCP en el puerto indicado. El callback se
-// ejecuta una vez cuando el servidor está listo.
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en el puerto http://localhost:${PORT}`);
-});
+  // --- Encender el servidor ---
+  // app.listen(PORT, callback) pone al servidor a "escuchar"
+  // peticiones TCP en el puerto indicado. El callback se
+  // ejecuta una vez cuando el servidor está listo.
+  app.listen(PORT, () => {
+    console.log(`Servidor corriendo en el puerto http://localhost:${PORT}`);
+  });
 
 } catch (e) {
   console.error('Error al conectar la BD', e.message);

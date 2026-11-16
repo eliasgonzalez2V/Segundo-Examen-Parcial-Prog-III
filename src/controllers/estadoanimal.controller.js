@@ -57,7 +57,8 @@ export const obtenerEstadoAnimalPorCodigo = async (req, res, next) => {
     // listara todos los movimientos de un animal, 
     // o se puede usar findOne({ codigo }) y te traerá el primero.
     const estado = await EstadoAnimal.find({ codigo }).populate('animalInfo');
-    if (!estado) {
+    // para que no devuelva un array vacío(Que significa true), sino la cantidad de posiciones que posee
+    if (estado.length === 0) {
       return res.status(404).json({ mensaje: "No se encontró un estado para el código proporcionado" });
     }
 
@@ -86,9 +87,9 @@ export const crearEstadoAnimal = async (req, res, next) => {
     const fechaEgresoFinal = estado === 'En reserva' ? null : fecha_egreso;
 
     // Validación de coherencia temporal (El egreso no puede ser anterior al ingreso)
-    if (fecha_ingreso && fecha_egreso) {
+    if (fecha_ingreso && fechaEgresoFinal) {
       const ingreso = new Date(fecha_ingreso);
-      const egreso = new Date(fecha_egreso);
+      const egreso = new Date(fechaEgresoFinal);
 
       if (egreso < ingreso) {
         return res.status(400).json({
@@ -98,8 +99,8 @@ export const crearEstadoAnimal = async (req, res, next) => {
     }
 
     // Validación de consistencia para estados terminales
-    const estadosTerminales = ['Fallecido', 'Adoptado', 'Liberado'];
-    if (estadosTerminales.includes(estado) && !fecha_egreso) {
+    const estadosTerminales = ['Fallecido', 'Trasladado', 'Liberado'];
+    if (estadosTerminales.includes(estado) && !fechaEgresoFinal) {
       return res.status(400).json({
         mensaje: `El estado '${estado}' requiere obligatoriamente una fecha de egreso registrada.`
       });
@@ -109,7 +110,7 @@ export const crearEstadoAnimal = async (req, res, next) => {
       codigo,
       fecha_ingreso,
       estado,
-      fecha_egreso,
+      fecha_egreso: fechaEgresoFinal,
       descripcion,
     });
 
@@ -157,8 +158,8 @@ export const actualizarEstadoAnimal = async (req, res, next) => {
     // 1. Validación de coherencia temporal
     if (ingresoValidar && egresoValidar) {
       if (new Date(egresoValidar) < new Date(ingresoValidar)) {
-        return res.status(400).json({ 
-          mensaje: "La fecha de egreso no puede ser anterior a la fecha de ingreso." 
+        return res.status(400).json({
+          mensaje: "La fecha de egreso no puede ser anterior a la fecha de ingreso."
         });
       }
     }
@@ -166,8 +167,8 @@ export const actualizarEstadoAnimal = async (req, res, next) => {
     // 2. Validación de consistencia para estados terminales
     const estadosTerminales = ['Fallecido', 'Adoptado', 'Liberado'];
     if (estadosTerminales.includes(estadoValidar) && !egresoValidar) {
-      return res.status(400).json({ 
-        mensaje: `El estado '${estadoValidar}' requiere obligatoriamente una fecha de egreso registrada.` 
+      return res.status(400).json({
+        mensaje: `El estado '${estadoValidar}' requiere obligatoriamente una fecha de egreso registrada.`
       });
     }
 

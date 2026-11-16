@@ -87,12 +87,18 @@ API_NINJAS_KEY=tu_clave_de_api_ninjas
 
 ---
 
-## 👥 Roles y Permisos del Sistema
+### 📋 Control de Accesos y Permisos por Operación 
 
-| Rol | Clasificación | Permisos y Funcionalidades |
-| :--- | :--- | :--- |
-| **`ADMIN`** | Gestión de Sistema | • CRUD de usuarios (veterinarios y administradores).<br>• Supervisión general de estadísticas de la reserva.<br>• Auditoría de registros. |
-| **`VETER`** | **Usuario Final** | • CRUD de animales rescatados.<br>• Gestión del estado del animal (ingresos, traslados, liberaciones, defunciones).<br>• Carga y seguimiento de fichas médicas (peso, altura, observaciones). |
+| Recurso / Módulo | Operación (Método / Ruta) | Rol `ADMIN` | Rol `VETER` | Tipo de Gestión / Restricción |
+| :--- | :--- | :--- | :--- | :--- |
+| **Usuarios / Personal** | `POST /api/usuarios` (Alta) | **Permitido** | Denegado | **Estrictamente Administrativa** (solo el ADMIN crea cuentas de personal). |
+| **Usuarios / Personal** | `DELETE /api/usuarios/:id` | **Permitido** | Denegado | Borrado físico/administrativo exclusivo del ADMIN. |
+| **Animales** | `POST /api/animales` (Crear) | **Permitido** | **Permitido** | Alta operativa compartida. |
+| **Animales** | `PUT /api/animales/:id` (Actualizar) | **Permitido** | **Permitido** | Edición de datos clínicos y generales. |
+| **Animales** | `DELETE /api/animales/:id` | **Permitido** | Denegado | Borrado físico exclusivo de ADMIN. |
+| **Estados del Animal** | Gestión de ingresos y bajas operativas | **Permitido** | **Permitido** | Las bajas de animales (defunciones, adopciones) se realizan vía **cambio de estado**, no por borrado. |
+| **Seguimientos** | `POST / PUT /api/seguimientos` | **Permitido** | **Permitido** | Registro y actualización del historial clínico. |
+| **Seguimientos** | `DELETE /api/seguimientos/:id` | **Permitido** | Denegado | Borrado físico exclusivo de ADMIN (preservación de auditoría clínica). |
 
 ---
 

@@ -21,11 +21,11 @@ const router = express.Router();
 // GET /api/animales -> listar todos
 router.get('/', logInfoCli, authToken,  obtenerAnimales);
 
-// GET /api/animales/:id -> obtener uno
-router.get('/:id',logInfoCli, authToken,  obtenerAnimalPorId);
-
 // GET /api/animales/codigo/:codigo -> obtener uno por código
 router.get('/codigo/:codigo', logInfoCli, authToken,  obtenerAnimalPorCodigo);
+
+// GET /api/animales/:id -> obtener uno
+router.get('/:id',logInfoCli, authToken,  obtenerAnimalPorId);
 
 // POST /api/animales -> crear uno
 router.post('/',logInfoCli, authToken,  crearAnimal);

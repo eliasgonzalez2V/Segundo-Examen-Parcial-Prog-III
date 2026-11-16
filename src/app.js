@@ -1,4 +1,6 @@
 // --- Importaciones ---
+//Importa lo que tengo en el .env
+import 'dotenv/config';
 // "express" es el framework web que nos da utilidades para
 // manejar rutas, requests (peticiones) y responses (respuestas).
 import express from 'express';
@@ -7,9 +9,6 @@ import express from 'express';
 // pueda hacer peticiones a este backend. Sin esto, el navegador
 // bloquearía las llamadas.
 import cors from 'cors';
-
-//Importa lo que tengo en el .env
-import 'dotenv/config'; 
 
 // Importa mongoose, para conectar con la BD de MongDB
 import mongoose from 'mongoose';
@@ -76,8 +75,10 @@ app.use(manejarErroresGlobales);
 // avisos de obsolescencia (Deprecation Warnings) en versiones previas a v7.
 mongoose.set('strictQuery', false);
 
-if (!process.env.MONGO_URI) {
-  console.error("Error crítico: La variable MONGO_URI no está definida en el archivo .env");
+// con esto verifico que en el env esten las variables de entorno obligatorias antes de 
+// intentar conectar a la BD y que este jwt_secret para poder firmar los tokens. Si no están, corto el arranque con process.exit(1)
+if (!process.env.MONGO_URI || !process.env.JWT_SECRET) {
+  console.error("Error crítico: Faltan variables de entorno obligatorias (MONGO_URI o JWT_SECRET)");
   process.exit(1);
 }
 

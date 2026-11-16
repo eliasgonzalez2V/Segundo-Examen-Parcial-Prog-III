@@ -63,7 +63,7 @@ app.use('/api/animales', animalesRoutes);
 app.use('/api/estados', estadoAnimalesRoutes);
 app.use('/api/seguimientos', seguimientosRoutes);
 // login
-app.post('/api/login', loginUsuario);
+app.post('/login', loginUsuario);
 
 // Middlewares de errores
 app.use(manejarNoEncontrado);

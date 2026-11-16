@@ -20,7 +20,7 @@ import { logInfoCli, authToken, esAdmin } from '../middlewares/middlewares.js';
 const router = express.Router();
 
 // POST /api/usuarios/login -> login
-router.post('/api/login', logInfoCli, loginUsuario);
+router.post('/login', logInfoCli, loginUsuario);
 
 // GET /api/usuarios -> listar todos
 router.get('/', logInfoCli, authToken, esAdmin, obtenerUsuarios);

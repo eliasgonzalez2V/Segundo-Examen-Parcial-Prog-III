@@ -62,7 +62,6 @@ Para levantar el proyecto en un entorno local, seguí estos pasos:
 1. **Clonar el repositorio:**
    ```bash
    git clone https://github.com/eliasgonzalez2V/Segundo-Examen-Parcial-Prog-III.git
-   cd Segundo-Examen-Parcial-Prog-III
    
 2. **Entrar a la carpeta del proyecto:**
 
@@ -70,6 +69,7 @@ Para levantar el proyecto en un entorno local, seguí estos pasos:
    cd Segundo-Examen-Parcial-Prog-III
 
 3. **Instalar dependencias:**
+
    bash
    npm install
 

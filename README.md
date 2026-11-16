@@ -10,6 +10,13 @@ El **Sistema de Gestión y Administración de Rescate Animal** está diseñado p
 
 ---
 
+| Integrante | Módulos y Responsabilidades a Cargo |
+| :--- | :--- |
+| **Daniel Cardozo** | • Modelos, Controladores y Rutas de **Usuarios** y **Animales**.<br>• Implementación de Middlewares de autenticación y seguridad. |
+| **Elías González** | • Modelos, Controladores y Rutas de **Seguimientos** y **EstadosAnimal**.<br>• Integración y aislamiento de servicios de API externa. |
+
+---
+
 ## 🚀 Características Principales
 
 * **Gestión de Usuarios y Roles:** Control de acceso diferenciado entre Administradores (gestión de personal y auditoría) y Veterinarios (Usuario Final que realiza la atención y los registros clínicos).
@@ -29,6 +36,54 @@ El proyecto adopta una arquitectura desacoplada con repositorios independientes 
 * **Base de Datos:** MongoDB.
 * **Entorno de Desarrollo:** Visual Studio Code.
 * **API Externa:** [API Ninjas - Animals](https://api-ninjas.com/api/animals) (utilizada como servicio complementario de consulta y referencia).
+
+---
+
+## 📂 Estructura de Directorios del Proyecto
+
+**Segundo-Examen-Parcial-Prog-III/**<br>
+├── src/<br>
+│   ├── controllers/<br>
+│   ├── data/<br>
+│   ├── middlewares/<br>
+│   ├── models/<br>
+│   ├── routes/<br>
+│   └── app.js<br>
+├── .env.example<br>
+├── package.json<br>
+└── README.md
+
+---
+
+## ⚙️ Instalación y Configuración Local
+
+Para levantar el proyecto en un entorno local, seguí estos pasos:
+
+1. **Clonar el repositorio:**
+   ```bash
+   git clone https://github.com/eliasgonzalez2V/Segundo-Examen-Parcial-Prog-III.git
+   cd Segundo-Examen-Parcial-Prog-III
+   
+2. **Entrar a la carpeta del proyecto:**
+
+   bash
+   cd Segundo-Examen-Parcial-Prog-III
+
+3. **Instalar dependencias:**
+   bash
+   npm install
+
+4. **Configurar las variables de entorno:**
+Creá un archivo .env en la raíz del proyecto basándote en el archivo .env.example:
+
+PORT=3000
+MONGO_URI=tu_conexion_a_mongodb
+JWT_SECRET=tu_clave_secreta_jwt
+API_NINJAS_KEY=tu_clave_de_api_ninjas
+
+5. **Ejecuta el servidor en desarrollo:**
+   bash
+   npm run dev
 
 ---
 
@@ -56,19 +111,35 @@ Las colecciones y modelos Mongoose implementados responden directamente a los ca
 
 ---
 
+## 🔒 Políticas de Seguridad y Reglas de Negocio
+* **Creación de Administradores (ADMIN):** El registro público a través de Postman o la API fuerza por defecto el rol **VETER**, ignorando cualquier intento de enviar el rol **ADMIN** en el body. Los administradores se gestionan exclusivamente desde la base de datos.
+
+* **Restricción de Borrado:** No se puede eliminar un animal si tiene seguimientos clínicos cargados.
+
+---
+
 ## 🔌 Endpoints de la API REST
 
-El backend expone una API REST organizada mediante los siguientes prefijos de rutas:
+### 1. Autenticación
+* **`POST /api/login`**
+  * **Descripción:** Autentica a un usuario y emite un token JWT.
+  * **Body (JSON):** `{"mail": "admin@reserva.com", "password": "tuPassword"}`
+  * **Respuesta Exitosa (200 OK):** `{"token": "eyJhbGciOi...", "usuario": {...}}`
 
-* **`POST /api/login`** — Autenticación de usuarios y emisión de token JWT.
-* **`/api/usuarios`** — Gestión de usuarios, perfiles y control de roles (`ADMIN` / `VETER`).
-* **`/api/animales`** — ABM (CRUD) de los datos fijos de los animales registrados en la reserva.
-* **`/api/estados`** — Gestión del ciclo de vida y movimientos de los animales (`En reserva`, `Trasladado`, `Liberado`, `Fallecido`).
-* **`/api/seguimientos`** — Registro de controles médicos y evolutivos periódicos (peso, altura, observaciones).
+### 2. Animales
+* **`GET /api/animales`** — Lista todos los animales registrados (incluye `infoExterna` enriquecida de API Ninjas).
+* **`POST /api/animales`** — Registra un nuevo animal.
+  * **Body (JSON):** `{"codigo": "55570", "especie": "felino", "clase": "gato", "raza": "Siamese", "origen": "doméstico"}`
+
+### 3. Estados (Ciclo de Vida)
+* **`POST /api/estados`** — Registra un cambio o estado del animal (`En reserva`, `Trasladado`, `Liberado`, `Fallecido`).
+
+### 4. Seguimientos Clínicos
+* **`GET /api/seguimientos`** — Registro de controles médicos y evolutivos periódicos (peso, altura, observaciones), con la respuesta aislada de la API externa.
 
 ---
 
 ## 📌 Estado del Proyecto
 
-El proyecto de manera manual corre en: https://segundo-examen-parcial-prog-iii.onrender.com
+El proyecto se encuentra desplegado y operativo en: https://segundo-examen-parcial-prog-iii.onrender.com
 🚧 *En desarrollo activo.*

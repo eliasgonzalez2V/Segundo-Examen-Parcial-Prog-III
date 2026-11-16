@@ -14,6 +14,7 @@
 
 import { Animal } from "../models/Animal.js";
 import { Seguimiento } from '../models/Seguimiento.js';
+import { obtenerInfoExternaAnimal } from "../services/apiNinjas.service.js";
 
 // ============================================================
 //  obtenerAnimales — GET /api/animales
@@ -45,7 +46,13 @@ export const obtenerAnimalPorId = async (req, res, next) => {
       return res.status(404).json({ mensaje: "Animal no encontrado" });
     }
 
-    res.json(animal);
+    const infoExterna = await obtenerInfoExternaAnimal(animal.especie, animal.raza);
+    //animal.infoExterna = infoExterna;
+
+    res.json({
+      ...animal.toJSON(),
+      infoExterna
+    });
   } catch (error) {
     // Delego el error al middleware global de errores para que lo maneje y devuelva la respuesta correcta
     next(error);
@@ -66,7 +73,13 @@ export const obtenerAnimalPorCodigo = async (req, res, next) => {
       return res.status(404).json({ mensaje: "Animal no encontrado" });
     }
 
-    res.json(animal);
+    const infoExterna = await obtenerInfoExternaAnimal(animal.especie, animal.raza);
+    //animal.infoExterna = infoExterna;
+
+    res.json({
+      ...animal.toJSON(),
+      infoExterna
+    });
   } catch (error) {
     next(error);
   }

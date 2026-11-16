@@ -127,21 +127,24 @@ Las colecciones y modelos Mongoose implementados responden directamente a los ca
 ## 🔌 Endpoints de la API REST
 
 ### 1. Autenticación
-* **`POST /api/login`**
+- **`POST /api/login`**
   * **Descripción:** Autentica a un usuario y emite un token JWT.
   * **Body (JSON):** `{"mail": "admin@reserva.com", "password": "tuPassword"}`
   * **Respuesta Exitosa (200 OK):** `{"token": "eyJhbGciOi...", "usuario": {...}}`
 
 ### 2. Animales
-* **`GET /api/animales`** — Lista todos los animales registrados (incluye `infoExterna` enriquecida de API Ninjas).
-* **`POST /api/animales`** — Registra un nuevo animal.
+- **`GET /api/animales`** — Lista todos los animales registrados.
+- **`GET /api/animales/codigo/:codigo`** — Obtiene la ficha de un animal por su código (incluye `infoExterna` enriquecida de API Ninjas).
+- **`POST /api/animales`** — Registra un nuevo animal.
   * **Body (JSON):** `{"codigo": "55570", "especie": "felino", "clase": "gato", "raza": "Siamese", "origen": "doméstico"}`
 
 ### 3. Estados (Ciclo de Vida)
-* **`POST /api/estados`** — Registra un cambio o estado del animal (`En reserva`, `Trasladado`, `Liberado`, `Fallecido`).
+- **`GET /api/estados`** — Lista el historial de estados y movimientos registrados.
+- **`POST /api/estados`** — Registra un cambio o estado del animal (`En reserva`, `Trasladado`, `Liberado`, `Fallecido`).
 
 ### 4. Seguimientos Clínicos
-* **`GET /api/seguimientos`** — Registro de controles médicos y evolutivos periódicos (peso, altura, observaciones), con la respuesta aislada de la API externa.
+- **`GET /api/seguimientos`** — Lista todos los controles médicos registrados.
+- **`GET /api/seguimientos/codigo/:codigo`** — Historial de controles médicos y evolutivos periódicos (peso, altura, observaciones) de un animal, con la respuesta aislada de la API externa.
 
 ---
 

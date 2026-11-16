@@ -20,7 +20,7 @@ import { Seguimiento } from '../models/Seguimiento.js';
 // ============================================================
 // Devuelve todos los animales en formato seguro para el cliente.
 // La clave queda oculta porque toJSON() no la incluye.
-export const obtenerAnimales = async (_req, res, next) => {
+export const obtenerAnimales = async (req, res, next) => {
 
   try {
     const animales = await Animal.find();
@@ -101,7 +101,7 @@ export const crearAnimal = async (req, res, next) => {
 
     const creado = await nuevoAnimal.save();
 
-    console.log("¡Animal guardado con éxito en MongoDB!", creado._id);
+    console.log("¡Animal guardado con éxito en MongoDB!", creado.id);
 
     res.status(201).json(creado);
   } catch (error) {
@@ -195,7 +195,7 @@ export const eliminarAnimal = async (req, res, next) => {
     await Animal.findByIdAndDelete(id);
 
     res.status(200).json({ mensaje: "Animal eliminado correctamente" });
-    console.log("Animal eliminado (no posee seguimientos médicos asociados):", eliminado._id);
+    console.log("Animal eliminado (no posee seguimientos médicos asociados):", eliminado.id);
   } catch (error) {
     next(error);
   }

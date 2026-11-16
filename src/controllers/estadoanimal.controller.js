@@ -17,7 +17,7 @@ import { Animal } from "../models/Animal.js";
 //  obtenerEstadoAnimales — GET /api/estados
 // ============================================================
 // Devuelve todos los registros de estado con la info del animal poblada.
-export const obtenerEstadoAnimales = async (_req, res, next) => {
+export const obtenerEstadoAnimales = async (req, res, next) => {
   try {
     const estados = await EstadoAnimal.find().populate('animalInfo');
     res.json(estados);

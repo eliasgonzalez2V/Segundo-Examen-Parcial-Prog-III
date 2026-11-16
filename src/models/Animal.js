@@ -48,6 +48,7 @@ const animalSchema = new mongoose.Schema(
 
 // Ocultar propiedades internas (como __v) al convertir a JSON
 animalSchema.set('toJSON', {
+  virtuals: true,         // ¡Agregamos esto para que Mongoose cree el campo 'id'
   transform: (_doc, ret) => {
     delete ret._id;       // Remueve el ID largo de MongoDB si usamos su codigo
     delete ret.__v;       // Remueve el número de versión

@@ -17,7 +17,7 @@ import { Animal } from "../models/Animal.js";
 //  obtenerSeguimientos — GET /api/seguimientos
 // ============================================================
 // Devuelve todos los registros de seguimiento con la info del animal poblada.
-export const obtenerSeguimientos = async (_req, res, next) => {
+export const obtenerSeguimientos = async (req, res, next) => {
   try {
     const seguimientos = await Seguimiento.find().populate('animalInfo');
     res.json(seguimientos);
@@ -157,7 +157,7 @@ export const crearSeguimiento = async (req, res, next) => {
     // Poblamos la info del animal antes de responder para que el cliente lo reciba completo
     await creado.populate('animalInfo');
 
-    console.log("¡Seguimiento guardado con éxito en MongoDB!", creado._id);
+    console.log("¡Seguimiento guardado con éxito en MongoDB!", creado.id);
 
     res.status(201).json(creado);
   } catch (error) {

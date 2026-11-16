@@ -9,7 +9,8 @@
 import mongoose from 'mongoose';
 
 const usuarioSchema = new mongoose.Schema(
-  {mail: {
+  {
+    mail: {
       type: String,
       required: [true, 'El mail es requerido'],
       unique: true,
@@ -55,8 +56,9 @@ const usuarioSchema = new mongoose.Schema(
 
 // No devolver la clave ni __v en las respuestas JSON
 usuarioSchema.set('toJSON', {
+  virtuals: true,       // <--- ¡Agregas esto para que Mongoose cree el campo 'id'!
   transform: (_doc, ret) => {
-    delete ret.password;  
+    delete ret.password;
     delete ret._id;       // Remueve el ID largo de MongoDB si usamos su mail
     delete ret.__v;       // Remueve el número de versión
     delete ret.createdAt; // Oculta la fecha de creación

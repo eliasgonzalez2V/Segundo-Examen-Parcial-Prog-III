@@ -23,7 +23,7 @@ const SALT_ROUNDS = 10;
 // ============================================================
 // Devuelve todos los usuarios en formato seguro para el cliente.
 // La clave queda oculta porque toJSON() no la incluye.
-export const obtenerUsuarios = async (_req, res, next) => {
+export const obtenerUsuarios = async (req, res, next) => {
   try {
     const usuarios = await Usuario.find();
     // res.json llama a toJSON implícitamente, ocultando 'clave' y '__v'
@@ -111,7 +111,7 @@ export const crearUsuario = async (req, res, next) => {
 
     const creado = await nuevoUsuario.save();
 
-    console.log("¡Usuario guardado con éxito en MongoDB!", creado._id);
+    console.log("¡Usuario guardado con éxito en MongoDB!", creado.id);
 
     res.status(201).json(creado);
   } catch (error) {
@@ -222,7 +222,7 @@ export const loginUsuario = async (req, res, next) => {
     }
 
     const token = jwt.sign(
-      { id: usu._id, rol: usu.rol },
+      { id: usu.id, rol: usu.rol },
     //Esto realiza Generar el JWT con el payload del usuario
       process.env.JWT_SECRET,
       { expiresIn: "30m" }

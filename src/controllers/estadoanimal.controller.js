@@ -83,6 +83,25 @@ export const crearEstadoAnimal = async (req, res, next) => {
       return res.status(404).json({ mensaje: `No existe un animal registrado con el código: ${codigo}` });
     }
 
+    // Validación del último estado registrado
+    const ultimoEstado = await EstadoAnimal.findOne({ codigo }).sort({ createdAt: -1 });
+
+    if (ultimoEstado) {
+      // 1. Si el animal figura como 'Fallecido', es un estado terminal (nadie se mueve)
+      if (ultimoEstado.estado === 'Fallecido') {
+        return res.status(400).json({
+          mensaje: "No se pueden registrar nuevos movimientos para un animal fallecido."
+        });
+      }
+
+      // 2. REGLA GENERAL: Si intentás cargar exactamente el mismo estado en el que ya está, frena
+      if (ultimoEstado.estado === estado) {
+        return res.status(400).json({
+          mensaje: `El animal ya se encuentra registrado actualmente en estado '${estado}'.`
+        });
+      }
+    }
+
     // Si el estado es 'En reserva', forzamos que no tenga fecha de egreso (Reingreso)
     const fechaEgresoFinal = estado === 'En reserva' ? null : fecha_egreso;
 
@@ -94,6 +113,14 @@ export const crearEstadoAnimal = async (req, res, next) => {
       if (egreso < ingreso) {
         return res.status(400).json({
           mensaje: "La fecha de egreso no puede ser anterior a la fecha de ingreso."
+        });
+      }
+
+      // NUEVA REGLA: Si el animal está afuera ('Trasladado' o 'Liberado'), 
+      // el único movimiento permitido para que vuelva a operar es el reingreso ('En reserva')
+      if ((ultimoEstado.estado === 'Trasladado' || ultimoEstado.estado === 'Liberado') && estado !== 'En reserva') {
+        return res.status(400).json({
+          mensaje: `El animal se encuentra '${ultimoEstado.estado}'. Debe registrar un reingreso ('En reserva') antes de asignarle otro estado.`
         });
       }
     }

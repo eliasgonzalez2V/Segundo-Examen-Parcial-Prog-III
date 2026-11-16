@@ -61,28 +61,41 @@ export const obtenerSeguimientosPorCodigo = async (req, res) => {
 
     let animalSeleccionado = null;
 
-    // Verificamos que exista el primer seguimiento y contenga la información del animal y su raza
+    // Verificamos de forma segura que exista el primer seguimiento y contenga la información del animal y su raza
     const primerSeguimiento = seguimientos[0];
-    if (primerSeguimiento.animalInfo && primerSeguimiento.animalInfo.raza) {
+    
+    if (primerSeguimiento && primerSeguimiento.animalInfo && primerSeguimiento.animalInfo.raza) {
+      const especie = primerSeguimiento.animalInfo.especie ? primerSeguimiento.animalInfo.especie.toLowerCase() : '';
       const raza = primerSeguimiento.animalInfo.raza;
       
-      // Realizamos la llamada a la API de Api-Ninjas codificando el raza para la URL
-      // encodeURIComponent Reemplaza casi todos los caracteres que no sean letras, dígitos [0-9], -, _, ., !, ~, ', *, y ( )
-      const url = `https://api.api-ninjas.com/v1/animals?name=${encodeURIComponent(raza)}`;
-      
-      const apiResponse = await fetch(url, {
-        headers: {
-          'X-Api-Key': process.env.API_NINJAS_KEY // Recuerda definir esta variable en tu archivo .env
-        }
-      });
+      // Envolvemos el fetch en su propio try/catch para que un fallo de red o timeout 
+      // jamás tire abajo la lectura del historial local.
 
-      if (apiResponse.ok) {
-        const resultados = await apiResponse.json();
-        console.log("Conexion con la API_NINJAS exitosa");
-          
-        if (resultados && resultados.length > 0) {
+      try{
+          // Realizamos la llamada a la API de Api-Ninjas codificando el raza para la URL
+          // encodeURIComponent Reemplaza casi todos los caracteres que no sean letras, dígitos [0-9], -, _, ., !, ~, ', *, y ( )
+          // DECISIÓN INTELIGENTE DE ENDPOINT:
+        let url = `https://api.api-ninjas.com/v1/animals?name=${encodeURIComponent(raza)}`; // Default silvestre
+
+        if (especie.includes('perro') || especie.includes('canino')) {
+          url = `https://api.api-ninjas.com/v1/dogs?name=${encodeURIComponent(raza)}`;
+        } else if (especie.includes('gato') || especie.includes('felino')) {
+          url = `https://api.api-ninjas.com/v1/cats?name=${encodeURIComponent(raza)}`;
+        }
+      
+          const apiResponse = await fetch(url, {
+            headers: {
+            'X-Api-Key': process.env.API_NINJAS_KEY // Recuerda definir esta variable en tu archivo .env
+            }
+          });
+
+          if (apiResponse.ok) {
+            const resultados = await apiResponse.json();
+            console.log("Conexion con la API_NINJAS exitosa");
+
+            if (resultados && resultados.length > 0) {
             // 1. Buscamos primero si hay una coincidencia exacta de nombre (ignorando mayúsculas)
-          let match = resultados.find(item => item.name.toLowerCase() === raza);
+          let match = resultados.find(item => item.name.toLowerCase() === raza.toLowerCase());
 
             // 2. Si no hay una coincidencia exacta, buscamos el que contenga el raza o seleccionamos el más corto (que suele ser el principal, ej: "Golden Retriever" frente a "English Cream Golden Retriever")
           if (!match) {
@@ -96,10 +109,17 @@ export const obtenerSeguimientosPorCodigo = async (req, res) => {
         }
       } else {
         console.error("Error al consultar la API Ninjas de animales");
+        animalSeleccionado = { aviso: "Información externa no disponible temporalmente" };
+        }
+      }catch (fetchError) {
+        //Si la api falla por red, se captura sin romper la respuesta de seguimiento
+        console.error("Error de red o timeout al consultar la API Ninjas de animales:", fetchError);
+        animalSeleccionado = { aviso: "Error de conexión con el servicio externo" };
       }
     }
 
     // Retornamos los seguimientos y únicamente el animal más parecido
+    // Retornamos los seguimientos locales (que siempre llegan) y la info externa (o su estado de error)
     res.json({
       seguimientos,
       infoExterna: animalSeleccionado // Ahora es un único objeto en lugar de un array

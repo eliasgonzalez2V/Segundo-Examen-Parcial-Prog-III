@@ -17,12 +17,12 @@ import { Animal } from "../models/Animal.js";
 //  obtenerSeguimientos — GET /api/seguimientos
 // ============================================================
 // Devuelve todos los registros de seguimiento con la info del animal poblada.
-export const obtenerSeguimientos = async (_req, res) => {
+export const obtenerSeguimientos = async (_req, res, next) => {
   try {
     const seguimientos = await Seguimiento.find().populate('animalInfo');
     res.json(seguimientos);
   } catch (error) {
-    res.status(500).json({ mensaje: error.message });
+    next(error);
   }
 };
 
@@ -30,7 +30,7 @@ export const obtenerSeguimientos = async (_req, res) => {
 //  obtenerSeguimientoPorId — GET /api/seguimientos/:id
 // ============================================================
 // El id del seguimiento llega en req.params.id. Si no existe, responde 404.
-export const obtenerSeguimientoPorId = async (req, res) => {
+export const obtenerSeguimientoPorId = async (req, res, next) => {
   try {
     const { id } = req.params;
 
@@ -41,7 +41,7 @@ export const obtenerSeguimientoPorId = async (req, res) => {
 
     res.json(seguimiento);
   } catch (error) {
-    res.status(500).json({ mensaje: error.message });
+    next(error);
   }
 };
 
@@ -50,7 +50,7 @@ export const obtenerSeguimientoPorId = async (req, res) => {
 // ============================================================
 // Devuelve el historial completo de controles de un animal según su código 
 // (relación 1 a muchos).
-export const obtenerSeguimientosPorCodigo = async (req, res) => {
+export const obtenerSeguimientosPorCodigo = async (req, res, next) => {
   try {
     const { codigo } = req.params;
 
@@ -126,7 +126,7 @@ export const obtenerSeguimientosPorCodigo = async (req, res) => {
     });
 
   } catch (error) {
-    res.status(500).json({ mensaje: error.message });
+    next(error);
   }
 };
 
@@ -134,7 +134,7 @@ export const obtenerSeguimientosPorCodigo = async (req, res) => {
 //  crearSeguimiento — POST /api/seguimientos
 // ============================================================
 // Valida que el animal exista antes de registrarle un control/seguimiento.
-export const crearSeguimiento = async (req, res) => {
+export const crearSeguimiento = async (req, res, next) => {
   try {
     const { codigo, fecha_control, peso, altura, observaciones } = req.body;
 
@@ -161,7 +161,7 @@ export const crearSeguimiento = async (req, res) => {
 
     res.status(201).json(creado);
   } catch (error) {
-    res.status(400).json({ mensaje: error.message });
+    next(error);
   }
 };
 
@@ -169,7 +169,7 @@ export const crearSeguimiento = async (req, res) => {
 //  actualizarSeguimiento — PUT /api/seguimientos/:id
 // ============================================================
 // Actualiza de forma parcial o total un registro de seguimiento existente.
-export const actualizarSeguimiento = async (req, res) => {
+export const actualizarSeguimiento = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { codigo, fecha_control, peso, altura, observaciones } = req.body;
@@ -204,7 +204,7 @@ export const actualizarSeguimiento = async (req, res) => {
 
     res.json(actualizado);
   } catch (error) {
-    res.status(400).json({ mensaje: error.message });
+    next(error);
   }
 };
 
@@ -212,7 +212,7 @@ export const actualizarSeguimiento = async (req, res) => {
 //  eliminarSeguimiento — DELETE /api/seguimientos/:id
 // ============================================================
 // Responde 204 cuando elimina y 404 cuando el id no existe.
-export const eliminarSeguimiento = async (req, res) => {
+export const eliminarSeguimiento = async (req, res, next) => {
   try {
     const { id } = req.params;
 
@@ -224,6 +224,6 @@ export const eliminarSeguimiento = async (req, res) => {
     res.status(204).send();
     console.log("Seguimiento de animal eliminado");
   } catch (error) {
-    res.status(500).json({ mensaje: error.message });
+    next(error);
   }
 };

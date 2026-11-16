@@ -23,13 +23,13 @@ const SALT_ROUNDS = 10;
 // ============================================================
 // Devuelve todos los usuarios en formato seguro para el cliente.
 // La clave queda oculta porque toJSON() no la incluye.
-export const obtenerUsuarios = async (_req, res) => {
+export const obtenerUsuarios = async (_req, res, next) => {
   try {
     const usuarios = await Usuario.find();
     // res.json llama a toJSON implícitamente, ocultando 'clave' y '__v'
     res.json(usuarios);
   } catch (error) {
-    res.status(500).json({ mensaje: error.message });
+    next(error);
   }
 };
 
@@ -38,7 +38,7 @@ export const obtenerUsuarios = async (_req, res) => {
 // ============================================================
 // El id llega como string en req.params.id. Si no existe, la
 // capa controladora responde 404; si existe, responde 200.
-export const obtenerUsuarioPorId = async (req, res) => {
+export const obtenerUsuarioPorId = async (req, res, next) => {
   try {
     const { id } = req.params;
 
@@ -49,7 +49,7 @@ export const obtenerUsuarioPorId = async (req, res) => {
 
     res.json(usu);
   } catch (error) {
-    res.status(500).json({ mensaje: error.message });
+    next(error);
   }
 };
 
@@ -58,7 +58,7 @@ export const obtenerUsuarioPorId = async (req, res) => {
 // ============================================================
 // El mail llega como string en req.params.mail. Si no existe, la
 // capa controladora responde 404; si existe, responde 200.
-export const obtenerUsuarioPorMail = async (req, res) => {
+export const obtenerUsuarioPorMail = async (req, res, next) => {
   try {
     const { mail } = req.params;
 
@@ -69,7 +69,7 @@ export const obtenerUsuarioPorMail = async (req, res) => {
 
     res.json(usu);
   } catch (error) {
-    res.status(500).json({ mensaje: error.message });
+    next(error);
   }
 };
 
@@ -79,7 +79,7 @@ export const obtenerUsuarioPorMail = async (req, res) => {
 // El modelo Usuario puede lanzar Error cuando los datos no
 // pasan las validaciones. El controller traduce ese error a
 // una respuesta HTTP 400 para el cliente.
-export const crearUsuario = async (req, res) => {
+export const crearUsuario = async (req, res, next) => {
 
   try {
     // ELIMINAMOS 'rol' de la desestructuración del req.body.
@@ -115,7 +115,7 @@ export const crearUsuario = async (req, res) => {
 
     res.status(201).json(creado);
   } catch (error) {
-    res.status(400).json({ mensaje: error.message });
+    next(error);
   }
 };
 
@@ -125,7 +125,7 @@ export const crearUsuario = async (req, res) => {
 // Conserva los campos anteriores cuando el cliente no envía
 // alguno de ellos (operador ??). Vuelve a validar el usuario
 // completo antes de reemplazarlo.
-export const actualizarUsuario = async (req, res) => {
+export const actualizarUsuario = async (req, res, next) => {
   // Ya verificas que exista, o puedes dejar que el db.js lo maneje
   try {
     const { id } = req.params;
@@ -171,7 +171,7 @@ export const actualizarUsuario = async (req, res) => {
 
     res.json(actualizado);
   } catch (error) {
-    res.status(400).json({ mensaje: error.message });
+    next(error);
   }
 };
 
@@ -179,7 +179,7 @@ export const actualizarUsuario = async (req, res) => {
 //  eliminarUsuario — DELETE /api/usuarios/:id
 // ============================================================
 // Responde 204 cuando elimina y 404 cuando el id no existe.
-export const eliminarUsuario = async (req, res) => {
+export const eliminarUsuario = async (req, res, next) => {
 
   try {
     const { id } = req.params;
@@ -192,14 +192,14 @@ export const eliminarUsuario = async (req, res) => {
     res.status(204).send();
     console.log("Usuario eliminado");
   } catch (error) {
-    res.status(500).json({ mensaje: error.message });
+    next(error);
   }
 };
 
 // ============================================================
 //  loginUsuario — POST /api/usuarios/login
 // ============================================================
-export const loginUsuario = async (req, res) => {
+export const loginUsuario = async (req, res, next) => {
   try {
     const { mail, password } = req.body;
 
@@ -236,7 +236,7 @@ export const loginUsuario = async (req, res) => {
 
   } catch (error) {
     console.error('Error en loginUsuario:', error);
-    return res.status(500).json({ mensaje: "Error interno del servidor" });
+    next(error);
   }
 };
 

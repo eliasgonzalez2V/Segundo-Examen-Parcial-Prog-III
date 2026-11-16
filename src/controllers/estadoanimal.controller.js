@@ -17,12 +17,12 @@ import { Animal } from "../models/Animal.js";
 //  obtenerEstadoAnimales — GET /api/estados
 // ============================================================
 // Devuelve todos los registros de estado con la info del animal poblada.
-export const obtenerEstadoAnimales = async (_req, res) => {
+export const obtenerEstadoAnimales = async (_req, res, next) => {
   try {
     const estados = await EstadoAnimal.find().populate('animalInfo');
     res.json(estados);
   } catch (error) {
-    res.status(500).json({ mensaje: error.message });
+    next(error);
   }
 };
 
@@ -30,7 +30,7 @@ export const obtenerEstadoAnimales = async (_req, res) => {
 //  obtenerEstadoAnimalPorId — GET /api/estados/:id
 // ============================================================
 // El id llega como string en req.params.id. Si no existe, responde 404.
-export const obtenerEstadoAnimalPorId = async (req, res) => {
+export const obtenerEstadoAnimalPorId = async (req, res, next) => {
   try {
     const { id } = req.params;
 
@@ -41,7 +41,7 @@ export const obtenerEstadoAnimalPorId = async (req, res) => {
 
     res.json(estado);
   } catch (error) {
-    res.status(500).json({ mensaje: error.message });
+    next(error);
   }
 };
 
@@ -49,7 +49,7 @@ export const obtenerEstadoAnimalPorId = async (req, res) => {
 //  obtenerEstadoAnimalPorCodigo — GET /api/estados/codigo/:codigo
 // ============================================================
 // Busca un estado utilizando el código del animal.
-export const obtenerEstadoAnimalPorCodigo = async (req, res) => {
+export const obtenerEstadoAnimalPorCodigo = async (req, res, next) => {
   try {
     const { codigo } = req.params;
 
@@ -63,7 +63,7 @@ export const obtenerEstadoAnimalPorCodigo = async (req, res) => {
 
     res.json(estado);
   } catch (error) {
-    res.status(500).json({ mensaje: error.message });
+    next(error);
   }
 };
 
@@ -72,7 +72,7 @@ export const obtenerEstadoAnimalPorCodigo = async (req, res) => {
 //  crearEstadoAnimal — POST /api/estados
 // ============================================================
 // Valida que el animal exista antes de registrarle un estado.
-export const crearEstadoAnimal = async (req, res) => {
+export const crearEstadoAnimal = async (req, res, next) => {
   try {
     const { codigo, fecha_ingreso, estado, fecha_egreso, descripcion } = req.body;
 
@@ -100,7 +100,7 @@ export const crearEstadoAnimal = async (req, res) => {
 
     res.status(201).json(creado);
   } catch (error) {
-    res.status(400).json({ mensaje: error.message });
+    next(error);
   }
 };
 
@@ -108,7 +108,7 @@ export const crearEstadoAnimal = async (req, res) => {
 //  actualizarEstadoAnimal — PUT /api/estados/:id
 // ============================================================
 // Actualiza de forma parcial o total un registro de estado.
-export const actualizarEstadoAnimal = async (req, res) => {
+export const actualizarEstadoAnimal = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { codigo, fecha_ingreso, estado, fecha_egreso, descripcion } = req.body;
@@ -143,7 +143,7 @@ export const actualizarEstadoAnimal = async (req, res) => {
 
     res.json(actualizado);
   } catch (error) {
-    res.status(400).json({ mensaje: error.message });
+    next(error);
   }
 };
 
@@ -151,7 +151,7 @@ export const actualizarEstadoAnimal = async (req, res) => {
 //  eliminarEstadoAnimal — DELETE /api/estados/:id
 // ============================================================
 // Responde 204 cuando elimina y 404 cuando el id no existe.
-export const eliminarEstadoAnimal = async (req, res) => {
+export const eliminarEstadoAnimal = async (req, res, next) => {
   try {
     const { id } = req.params;
 
@@ -163,6 +163,6 @@ export const eliminarEstadoAnimal = async (req, res) => {
     res.status(204).send();
     console.log("Estado de animal eliminado");
   } catch (error) {
-    res.status(500).json({ mensaje: error.message });
+    next(error);
   }
 };

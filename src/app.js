@@ -23,6 +23,9 @@ import seguimientosRoutes from './routes/seguimientos.routes.js';
 
 import {loginUsuario} from './controllers/usuario.controller.js';
 
+// Middlewares de errores
+import { manejarNoEncontrado, manejarErroresGlobales } from './middlewares/error.middlewares.js';
+
 // Importamos la constante PORT desde nuestro archivo de config.
 // Si existe la variable de entorno PORT la usa, si no, 3000.
 //import { PORT } from '../.env';
@@ -63,19 +66,30 @@ app.use('/api/seguimientos', seguimientosRoutes);
 // login
 app.post('/api/login', loginUsuario);
 
+// Middlewares de errores
+app.use(manejarNoEncontrado);
+app.use(manejarErroresGlobales);
+
 // Conexión con la BD
 
 // 1. Desactivamos el modo de consulta estricto de Mongoose para evitar
 // avisos de obsolescencia (Deprecation Warnings) en versiones previas a v7.
 mongoose.set('strictQuery', false);
 
-try {
-  await mongoose.connect(process.env.MONGO_URI);
-  console.log('Base de datos conectada exitosamente a MongoDB Atlas');
-  } catch (e) {
-  console.error('Error al conectar la BD', e);
+if (!process.env.MONGO_URI) {
+  console.error("Error crítico: La variable MONGO_URI no está definida en el archivo .env");
+  process.exit(1);
 }
 
+try {
+  console.log("Intentando conectar a la base de datos...");
+
+  // Agregamos serverSelectionTimeoutMS para que si falla o no la encuentra, 
+  // tire error rápido en lugar de quedar intentando colgado en segundo plano.
+  await mongoose.connect(process.env.MONGO_URI,{
+    serverSelectionTimeoutMS: 5000, // 5 segundos
+  });
+  console.log('Base de datos conectada exitosamente a MongoDB Atlas');
 // --- Encender el servidor ---
 // app.listen(PORT, callback) pone al servidor a "escuchar"
 // peticiones TCP en el puerto indicado. El callback se
@@ -83,3 +97,8 @@ try {
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto http://localhost:${PORT}`);
 });
+
+} catch (e) {
+  console.error('Error al conectar la BD', e.message);
+  process.exit(1); // Corta el arranque si la BD no está disponible
+}

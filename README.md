@@ -12,8 +12,8 @@ El **Sistema de Gestión y Administración de Rescate Animal** está diseñado p
 
 | Integrante | Módulos y Responsabilidades a Cargo |
 | :--- | :--- |
-| **Daniel Cardozo** | • Modelos, Controladores y Rutas de **Usuarios** y **Animales**.<br>• Implementación de Middlewares de autenticación y seguridad. |
-| **Elías González** | • Modelos, Controladores y Rutas de **Seguimientos** y **EstadosAnimal**.<br>• Integración y aislamiento de servicios de API externa. |
+| **Daniel** | • Modelos, Controladores y Rutas de **Usuarios** y **Animales**.<br>• Implementación de Middlewares de autenticación y seguridad. |
+| **Elías** | • Modelos, Controladores y Rutas de **Seguimientos** y **EstadosAnimal**.<br>• Integración y aislamiento de servicios de API externa. |
 
 ---
 
@@ -87,6 +87,7 @@ API_NINJAS_KEY=tu_clave_de_api_ninjas
 
 6. **Auditoría y Seguridad de Dependencias:**
    Se ejecutó `npm audit fix` para resolver vulnerabilidades transitivas detectadas en producción, manteniendo el archivo `package-lock.json` actualizado y seguro.
+
 ---
 
 ### 📋 Control de Accesos y Permisos por Operación 
@@ -111,7 +112,7 @@ Las colecciones y modelos Mongoose implementados responden directamente a los ca
 * **Colección `usuarios` (Modelo `Usuario`):**
   * `mail` *(único)*, `password` *(select: false)*, `rol` (`ADMIN` / `VETER`), `perfil` `{ nombre, apellido, foto }`, `createdAt`, `updatedAt`
 * **Colección `animales` (Modelo `Animal`):**
-  * `codigo` *(clave única de negocio)*, `especie`, `clase`, `raza`, `origen`, `fechaNacimiento`, `perfil` `{}`
+  * `codigo` *(clave única de negocio)*, `especie`, `clase`, `raza`, `origen`, `fechaNacimiento`, `perfil` `{nombre, sexo, color, senias_particulares}`
 * **Colección `estados` (Modelo `EstadoAnimal`):**
   * `codigo` *(referencia al animal)*, `fecha_ingreso`, `estado` (`En reserva` / `Trasladado` / `Liberado` / `Fallecido`), `fecha_egreso`, `descripcion`, `animalInfo` *(virtual populates)*
 * **Colección `seguimientos` (Modelo `Seguimiento`):**

@@ -3,7 +3,7 @@ export const manejarNoEncontrado = (req, res, next) => {
   res.status(404).json({ mensaje: "Ruta no encontrada" });
 };
 
-// Middleware global de errores clasificados (400, 401, 403, 404, 409, 500)
+// Middleware global de errores clasificados (400, 401, 403, 409, 500)
 export const manejarErroresGlobales = (err, req, res, next) => {
 
   //Aca se ve que le llega

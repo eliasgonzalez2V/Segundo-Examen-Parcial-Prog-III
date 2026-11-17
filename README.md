@@ -85,6 +85,8 @@ API_NINJAS_KEY=tu_clave_de_api_ninjas
    bash
    npm run dev
 
+6. **Auditoría y Seguridad de Dependencias:**
+   Se ejecutó `npm audit fix` para resolver vulnerabilidades transitivas detectadas en producción, manteniendo el archivo `package-lock.json` actualizado y seguro.
 ---
 
 ### 📋 Control de Accesos y Permisos por Operación 
@@ -122,6 +124,7 @@ Las colecciones y modelos Mongoose implementados responden directamente a los ca
 
 * **Restricción de Borrado:** No se puede eliminar un animal si tiene seguimientos clínicos cargados.
 
+- **Manejo Centralizado de Errores:** Implementación de un middleware global de captura de excepciones con la firma de cuatro parámetros `(err, req, res, next)`, ubicado al final de la pila de rutas en `app.js` para estandarizar las respuestas HTTP y evitar redundancias de bloques `try/catch`.
 ---
 
 ## 🔌 Endpoints de la API REST
